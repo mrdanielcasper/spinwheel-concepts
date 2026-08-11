@@ -1,0 +1,1348 @@
+{
+    "status": {
+        "code": 200,
+        "desc": "success"
+    },
+    "data": {
+        "userId": "c3cf91d9-21c8-413c-82bf-286d6e05593e",
+        "extUserId": "7ca88034-29ff-4402-a1a8-b371aea4b457",
+        "creditReports": [
+            {
+                "id": "0af305ab-75b7-4f34-9112-089813a00216",
+                "sourceBureau": "Equifax",
+                "type": "1_BUREAU.FULL",
+                "profile": {
+                    "firstName": "CHRISTY",
+                    "middleName": "L",
+                    "lastName": "JENOVAL",
+                    "dateOfBirth": "1998-03-08",
+                    "ssn": "4123",
+                    "formerNames": [
+                        {
+                            "firstName": "CHRISTINE",
+                            "middleName": "LUCILLE",
+                            "lastName": "GENOVAL"
+                        }
+                    ],
+                    "addresses": [
+                        {
+                            "addressLine1": "5396 NORTH REESE AVENUE",
+                            "city": "FRESNO",
+                            "state": "CA",
+                            "zip": "93722",
+                            "residencyType": "CURRENT",
+                            "addressOwnership": "OWN",
+                            "addressSource": "AUTOMATED_UPDATE",
+                            "residencyDurationInMonths": 48,
+                            "reportedDate": "2024-01-20",
+                            "reportedDateWithFormat": {
+                                "value": "2024-01-20",
+                                "format": "YYYY-MM-DD"
+                            },
+                            "firstReportedDateWithFormat": {
+                                "value": "2020-01",
+                                "format": "YYYY-MM"
+                            }
+                        },
+                        {
+                            "addressLine1": "305 LINDEN AVE",
+                            "city": "ATLANTA",
+                            "state": "GA",
+                            "zip": "30316",
+                            "residencyType": "PREVIOUS",
+                            "addressOwnership": "RENT",
+                            "addressSource": "OTHER",
+                            "residencyDurationInMonths": 48,
+                            "reportedDate": "2024-01-20",
+                            "reportedDateWithFormat": {
+                                "value": "2024-01-20",
+                                "format": "YYYY-MM-DD"
+                            },
+                            "firstReportedDateWithFormat": {
+                                "value": "2020-01",
+                                "format": "YYYY-MM"
+                            }
+                        }
+                    ],
+                    "employmentHistory": [
+                        {
+                            "employerName": "Bruen, Boehm and Stanton",
+                            "position": "Direct Research Coordinator",
+                            "startDateWithFormat": {
+                                "value": "2020-01",
+                                "format": "YYYY-MM"
+                            },
+                            "reportedDateWithFormat": {
+                                "value": "2020-01",
+                                "format": "YYYY-MM"
+                            },
+                            "employmentStatus": "CURRENT"
+                        }
+                    ],
+                    "createdOn": 1719584284184,
+                    "updatedOn": 1719584284184
+                },
+                "inquiries": [
+                    {
+                        "inquirerName": "Reilly, McLaughlin and Gulgowski",
+                        "inquiryDate": "2020-01-01",
+                        "inquirerIndustryCode": "ZB",
+                        "purposeType": "HARD",
+                        "sourceBureau": "Equifax",
+                        "bureauSubscriberCode": "244ZB00566"
+                    }
+                ],
+                "bankruptcies": [
+                    {
+                        "filedDateWithFormat": {
+                            "value": "2018-07-19",
+                            "format": "YYYY-MM-DD"
+                        },
+                        "dispositionDateWithFormat": {
+                            "value": "2018-10-29",
+                            "format": "YYYY-MM-DD"
+                        },
+                        "verifiedDateWithFormat": {
+                            "value": "2018-11-30",
+                            "format": "YYYY-MM-DD"
+                        },
+                        "reportedDateWithFormat": {
+                            "value": "2024-11-21",
+                            "format": "YYYY-MM-DD"
+                        },
+                        "caseNumber": "1886052",
+                        "type": "INDIVIDUAL",
+                        "filer": "INDIVIDUAL",
+                        "disposition": "DISCHARGED_CH_7",
+                        "priorDisposition": "VOLUNTARY_CH_7",
+                        "liabilityAmount": 5000,
+                        "assetAmount": 1500,
+                        "exemptAmount": 1000,
+                        "court": {
+                            "industryType": "Federal",
+                            "industryCode": "VF",
+                            "bureauSubscriberCode": "180VF00121"
+                        },
+                        "narratives": [
+                            {
+                                "code": "AV",
+                                "description": "Charge"
+                            }
+                        ]
+                    }
+                ],
+                "creditScoreDetails": [],
+                "creditAttributes": [
+                    {
+                        "description": "Number of tradelines",
+                        "value": "31"
+                    },
+                    {
+                        "description": "Number of trades",
+                        "value": "31"
+                    },
+                    {
+                        "description": "Average age of open tradelines",
+                        "value": "53.00"
+                    },
+                    {
+                        "description": "Average age of open tradelines; exclude auth user and joint ecoa",
+                        "value": "53.00"
+                    }
+                ],
+                "summary": {
+                    "totalSecuredDebtAmount": 0,
+                    "securedDebtLiabilitiesCount": 1,
+                    "totalUnsecuredDebtAmount": 4197.43,
+                    "unsecuredDebtLiabilitiesCount": 2,
+                    "totalUnsecuredDebtAmountExcludingStudent": 256.43,
+                    "unsecuredDebtLiabilitiesCountExcludingStudent": 1,
+                    "totalUnknownDebtAmount": 11342,
+                    "unknownDebtLiabilitiesCount": 3
+                },
+                "reportStatus": {
+                    "status": "SUCCESS"
+                },
+                "updatedOn": 1719584284185,
+                "createdOn": 1719584284185
+            }
+        ],
+        "creditCards": [
+            {
+                "creditCardId": "f6815836-0bcd-4b37-8f6c-5a0ad70360ff",
+                "displayName": "Chase Bank",
+                "logoUrl": "https://cdn.spinwheel.io/images/logo/ebd6dab9-4558-40c4-8c21-65070a07df5a.png",
+                "cardProfile": {
+                    "creditCardNumberMasked": "123456******3456",
+                    "accountOriginationDate": "2020-01-02T00:00:00.000Z",
+                    "status": "OPEN",
+                    "creditLimit": 500,
+                    "accountRating": "1",
+                    "liabilitySubtype": "CreditCard",
+                    "debtType": "UNSECURED",
+                    "availableCreditDerived": 243.57,
+                    "accountOwnershipType": "INDIVIDUAL",
+                    "termsFrequency": "MONTHLY",
+                    "accountType": "REVOLVING",
+                    "reportedDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "lastActivityDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "consumerDisputeStatus": "NOT_DISPUTED",
+                    "derogatoryDataStatus": "NOT_DEROGATORY",
+                    "reviewedInMonths": 12,
+                    "collectionStatus": "NOT_IN_COLLECTION",
+                    "chargeOffStatus": "NOT_CHARGED_OFF",
+                    "accountTypeCode": "R",
+                    "ecoaCode": "I",
+                    "adverseRatingCount": 0,
+                    "paymentHistory": {
+                        "lastAssessedStatementDate": "2024-05-01",
+                        "details": [
+                            {
+                                "date": "2024-05-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-04-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-03-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-02-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-01-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-12-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-11-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-10-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-09-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-08-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-07-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-06-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            }
+                        ]
+                    },
+                    "limitType": "REGULAR",
+                    "creditUtilization": 51.29
+                },
+                "balanceDetails": {
+                    "outstandingBalance": 256.43,
+                    "updatedOn": 1719532800000
+                },
+                "statementSummary": {
+                    "statementBalance": 256.43,
+                    "statementDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "minimumPaymentAmount": 100,
+                    "lastPaymentDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "dueDate": "2024-07-28T00:00:00.000Z",
+                    "overduePeriod": "NOT_OVERDUE"
+                },
+                "aprs": [
+                    {
+                        "rate": 19.99,
+                        "type": "PURCHASE",
+                        "source": "REAL_TIME",
+                        "updatedOn": 1719584284061
+                    }
+                ],
+                "capabilities": {
+                    "payments": {
+                        "billPayment": {
+                            "availability": "SUPPORTED"
+                        }
+                    },
+                    "data": {
+                        "realtimeBalance": {
+                            "availability": "SUPPORTED"
+                        },
+                        "statementSummary": {
+                            "availability": "SUPPORTED"
+                        },
+                        "annualPercentageRate": {
+                            "availability": "SUPPORTED"
+                        }
+                    }
+                },
+                "creditor": {
+                    "industryType": "National credit card companies",
+                    "industryCode": "ON",
+                    "phoneNumber": "11708747346",
+                    "originalName": "CHASE BANK",
+                    "bureauSubscriberCode": "401ON02149",
+                    "address": {
+                        "addressLine1": "5396 NORTH REESE AVENUE",
+                        "city": "FRESNO",
+                        "state": "CA",
+                        "zip": "93722"
+                    }
+                },
+                "updatedOn": 1719584284061,
+                "createdOn": 1719584284061
+            }
+        ],
+        "autoLoans": [
+            {
+                "autoLoanId": "5563f472-7f4e-4cf6-b45b-33fdffd8bb29",
+                "displayName": "Bank of America",
+                "logoUrl": "https://cdn.spinwheel.io/images/logo/ebd6dab9-4558-40c4-8c21-65070a07df5a.png",
+                "liabilityProfile": {
+                    "accountOriginationDate": "2020-01-01",
+                    "status": "OPEN",
+                    "interestRateDerived": 25.3907,
+                    "loanOriginationAmount": 11195,
+                    "accountRating": "1",
+                    "liabilitySubtype": "AutoLease",
+                    "debtType": "UNKNOWN",
+                    "pendingLoanTermInMonthsDerived": 348,
+                    "loanTermInMonths": 360,
+                    "accountOwnershipType": "JOINT_CONTRACTUAL_LIABILITY",
+                    "termsFrequency": "MONTHLY",
+                    "accountType": "INSTALLMENT",
+                    "reportedDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "lastActivityDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "consumerDisputeStatus": "NOT_DISPUTED",
+                    "derogatoryDataStatus": "NOT_DEROGATORY",
+                    "reviewedInMonths": 12,
+                    "collectionStatus": "NOT_IN_COLLECTION",
+                    "chargeOffStatus": "NOT_CHARGED_OFF",
+                    "accountTypeCode": "I",
+                    "ecoaCode": "J",
+                    "adverseRatingCount": 0,
+                    "accountNumberLastFour": "1234",
+                    "paymentHistory": {
+                        "lastAssessedStatementDate": "2024-05-01",
+                        "details": [
+                            {
+                                "date": "2024-05-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-04-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-03-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-02-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-01-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-12-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-11-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-10-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-09-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-08-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-07-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-06-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            }
+                        ]
+                    }
+                },
+                "balanceDetails": {
+                    "outstandingBalance": 7632,
+                    "updatedOn": 1719532800000
+                },
+                "capabilities": {
+                    "payments": {
+                        "billPayment": {
+                            "availability": "SUPPORTED"
+                        }
+                    },
+                    "data": {
+                        "realtimeBalance": {
+                            "availability": "SUPPORTED"
+                        },
+                        "payoffSummary": {
+                            "availability": "NOT_SUPPORTED",
+                            "description": "INSTITUTION_NOT_SUPPORTED"
+                        },
+                        "statementSummary": {
+                            "availability": "SUPPORTED"
+                        }
+                    }
+                },
+                "statementSummary": {
+                    "statementDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "statementBalance": 7632,
+                    "principalBalance": 7632,
+                    "minimumPaymentAmount": 237,
+                    "lastPaymentDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "dueDate": "2024-07-28",
+                    "overduePeriod": "NOT_OVERDUE"
+                },
+                "creditor": {
+                    "industryType": "Commercial banks",
+                    "industryCode": "BB",
+                    "phoneNumber": "11708747346",
+                    "originalName": "BANK OF AMERICA-BARN",
+                    "bureauSubscriberCode": "217BB00039",
+                    "address": {
+                        "addressLine1": "5396 NORTH REESE AVENUE",
+                        "city": "FRESNO",
+                        "state": "CA",
+                        "zip": "93722"
+                    }
+                },
+                "updatedOn": 1719584284121,
+                "createdOn": 1719584284121
+            }
+        ],
+        "homeLoans": [
+            {
+                "homeLoanId": "a4d9d77c-023f-4620-ab11-66e47ac491fd",
+                "displayName": "City Federal Mortgage",
+                "logoUrl": "https://cdn.spinwheel.io/images/logo/ebd6dab9-4558-40c4-8c21-65070a07df5a.png",
+                "liabilityProfile": {
+                    "accountOriginationDate": "2020-01-01",
+                    "status": "CLOSED",
+                    "interestRateDerived": 0,
+                    "loanOriginationAmount": 0,
+                    "highCreditAmount": 0,
+                    "accountRating": "B",
+                    "liabilitySubtype": "Mortgage",
+                    "debtType": "SECURED",
+                    "pendingLoanTermInMonthsDerived": 348,
+                    "loanTermInMonths": 360,
+                    "closedDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "accountOwnershipType": "JOINT_CONTRACTUAL_LIABILITY",
+                    "termsFrequency": "MONTHLY",
+                    "accountType": "MORTGAGE",
+                    "reportedDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "lastActivityDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "consumerDisputeStatus": "NOT_DISPUTED",
+                    "derogatoryDataStatus": "NOT_DEROGATORY",
+                    "reviewedInMonths": 12,
+                    "collectionStatus": "NOT_IN_COLLECTION",
+                    "chargeOffStatus": "NOT_CHARGED_OFF",
+                    "accountTypeCode": "M",
+                    "ecoaCode": "J",
+                    "adverseRatingCount": 0,
+                    "accountNumberLastFour": "1234",
+                    "paymentHistory": {
+                        "lastAssessedStatementDate": "2024-05-01",
+                        "details": [
+                            {
+                                "date": "2024-05-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-04-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-03-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-02-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-01-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-12-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-11-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-10-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-09-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-08-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-07-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-06-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            }
+                        ]
+                    },
+                    "narratives": [
+                        {
+                            "code": "IR",
+                            "description": "Account closed at consumers request"
+                        }
+                    ]
+                },
+                "balanceDetails": {
+                    "outstandingBalance": 0,
+                    "updatedOn": 1719532800000
+                },
+                "capabilities": {
+                    "payments": {
+                        "billPayment": {
+                            "availability": "NOT_SUPPORTED",
+                            "description": "INSTITUTION_NOT_SUPPORTED"
+                        }
+                    },
+                    "data": {
+                        "realtimeBalance": {
+                            "availability": "NOT_SUPPORTED"
+                        },
+                        "statementSummary": {
+                            "availability": "SUPPORTED"
+                        }
+                    }
+                },
+                "statementSummary": {
+                    "statementDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "statementBalance": 0,
+                    "principalBalance": 0,
+                    "minimumPaymentAmount": 0,
+                    "lastPaymentDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "dueDate": "2024-07-28",
+                    "overduePeriod": "NOT_OVERDUE"
+                },
+                "creditor": {
+                    "industryType": "Commercial banks",
+                    "industryCode": "BB",
+                    "phoneNumber": "11708747346",
+                    "originalName": "CITY FED MORTGAGE",
+                    "bureauSubscriberCode": "497BB00917",
+                    "address": {
+                        "addressLine1": "5396 NORTH REESE AVENUE",
+                        "city": "FRESNO",
+                        "state": "CA",
+                        "zip": "93722"
+                    }
+                },
+                "updatedOn": 1719584284093,
+                "createdOn": 1719584284093
+            }
+        ],
+        "personalLoans": [
+            {
+                "personalLoanId": "04873688-0971-4d5f-8a97-0fdf4b4ca644",
+                "displayName": "JPMorgan Chase & Co",
+                "logoUrl": "https://cdn.spinwheel.io/images/logo/ebd6dab9-4558-40c4-8c21-65070a07df5a.png",
+                "liabilityProfile": {
+                    "accountOriginationDate": "2020-01-01",
+                    "status": "OPEN",
+                    "interestRateDerived": 38.0208,
+                    "loanOriginationAmount": 3093,
+                    "highCreditAmount": 3093,
+                    "accountRating": "1",
+                    "liabilitySubtype": "InstallmentLoan",
+                    "debtType": "UNKNOWN",
+                    "pendingLoanTermInMonthsDerived": 348,
+                    "loanTermInMonths": 360,
+                    "accountOwnershipType": "INDIVIDUAL",
+                    "termsFrequency": "MONTHLY",
+                    "accountType": "INSTALLMENT",
+                    "reportedDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "lastActivityDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "consumerDisputeStatus": "NOT_DISPUTED",
+                    "derogatoryDataStatus": "NOT_DEROGATORY",
+                    "reviewedInMonths": 12,
+                    "collectionStatus": "NOT_IN_COLLECTION",
+                    "chargeOffStatus": "NOT_CHARGED_OFF",
+                    "accountTypeCode": "I",
+                    "ecoaCode": "I",
+                    "adverseRatingCount": 0,
+                    "accountNumberLastFour": "1234",
+                    "paymentHistory": {
+                        "lastAssessedStatementDate": "2024-05-01",
+                        "details": [
+                            {
+                                "date": "2024-05-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-04-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-03-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-02-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-01-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-12-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-11-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-10-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-09-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-08-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-07-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-06-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            }
+                        ]
+                    }
+                },
+                "balanceDetails": {
+                    "outstandingBalance": 2327,
+                    "updatedOn": 1719532800000
+                },
+                "capabilities": {
+                    "payments": {
+                        "billPayment": {
+                            "availability": "SUPPORTED"
+                        }
+                    },
+                    "data": {
+                        "realtimeBalance": {
+                            "availability": "NOT_SUPPORTED"
+                        },
+                        "statementSummary": {
+                            "availability": "SUPPORTED"
+                        }
+                    }
+                },
+                "statementSummary": {
+                    "statementDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "statementBalance": 2327,
+                    "principalBalance": 2327,
+                    "minimumPaymentAmount": 98,
+                    "lastPaymentDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "dueDate": "2024-07-28",
+                    "overduePeriod": "NOT_OVERDUE"
+                },
+                "creditor": {
+                    "industryType": "Commercial banks",
+                    "industryCode": "BB",
+                    "phoneNumber": "11708747346",
+                    "originalName": "JPMCB",
+                    "bureauSubscriberCode": "401BB00573",
+                    "address": {
+                        "addressLine1": "5396 NORTH REESE AVENUE",
+                        "city": "FRESNO",
+                        "state": "CA",
+                        "zip": "93722"
+                    }
+                },
+                "updatedOn": 1719584284090,
+                "createdOn": 1719584284090
+            }
+        ],
+        "studentLoans": [
+            {
+                "studentLoanId": "187b8bf5-7983-4ec1-ad55-103156e9ac5e",
+                "displayName": "Nelnet Loan Services",
+                "logoUrl": "https://cdn.spinwheel.io/images/logo/ebd6dab9-4558-40c4-8c21-65070a07df5a.png",
+                "liabilityProfile": {
+                    "accountOriginationDate": "2020-01-03",
+                    "status": "CLOSED",
+                    "interestRateDerived": 0,
+                    "loanOriginationAmount": 5174,
+                    "highCreditAmount": 5174,
+                    "accountRating": "9",
+                    "liabilitySubtype": "Educational",
+                    "debtType": "UNSECURED",
+                    "pendingLoanTermInMonthsDerived": 348,
+                    "loanTermInMonths": 360,
+                    "accountNumberLastFour": "1234",
+                    "closedDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "accountOwnershipType": "INDIVIDUAL",
+                    "termsFrequency": "MONTHLY",
+                    "accountType": "INSTALLMENT",
+                    "reportedDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "lastActivityDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "consumerDisputeStatus": "NOT_DISPUTED",
+                    "derogatoryDataStatus": "DEROGATORY",
+                    "reviewedInMonths": 12,
+                    "collectionStatus": "NOT_IN_COLLECTION",
+                    "chargeOffStatus": "CHARGED_OFF",
+                    "chargeOffDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "chargeOffAmount": 5174,
+                    "firstDelinquencyDateWithFormat": {
+                        "value": "2020-11",
+                        "format": "YYYY-MM"
+                    },
+                    "accountTypeCode": "I",
+                    "ecoaCode": "I",
+                    "highestAdverseRating": "L",
+                    "highestAdverseRatingDateWithFormat": {
+                        "value": "2024-05",
+                        "format": "YYYY-MM"
+                    },
+                    "mostRecentAdverseRating": "L",
+                    "mostRecentAdverseRatingDateWithFormat": {
+                        "value": "2024-05",
+                        "format": "YYYY-MM"
+                    },
+                    "adverseRatingCount": 1,
+                    "paymentHistory": {
+                        "lastAssessedStatementDate": "2024-05-01",
+                        "details": [
+                            {
+                                "date": "2024-05-01",
+                                "description": "The account is in charge off",
+                                "code": "L"
+                            },
+                            {
+                                "date": "2024-04-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-03-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-02-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2024-01-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-12-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-11-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-10-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-09-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-08-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-07-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-06-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            }
+                        ]
+                    },
+                    "liabilityTransfers": {
+                        "transferredTo": {
+                            "creditorName": "ABC DEBT RECOVERY"
+                        }
+                    },
+                    "narratives": [
+                        {
+                            "code": "DB",
+                            "description": "Charged off account"
+                        },
+                        {
+                            "code": "CW",
+                            "description": "Account closed by credit grantor"
+                        }
+                    ],
+                    "loanType": "UNVERIFIED"
+                },
+                "balanceDetails": {
+                    "outstandingBalance": 3941,
+                    "updatedOn": 1719532800000
+                },
+                "capabilities": {
+                    "payments": {
+                        "billPayment": {
+                            "availability": "NOT_SUPPORTED",
+                            "description": "CLOSED_ACCOUNT"
+                        }
+                    },
+                    "data": {
+                        "liabilityGroupPayoffQuote": {
+                            "availability": "SUPPORTED",
+                            "liabilityGroupId": "lc444634-40a8-4a62-849d-4e2db7b8a9ad"
+                        },
+                        "realtimeBalance": {
+                            "availability": "NOT_SUPPORTED"
+                        },
+                        "statementSummary": {
+                            "availability": "SUPPORTED"
+                        }
+                    }
+                },
+                "statementSummary": {
+                    "statementDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "statementBalance": 3941,
+                    "principalBalance": 3941,
+                    "minimumPaymentAmount": 131,
+                    "lastPaymentDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "dueDate": "2024-07-28",
+                    "overduePeriod": "NOT_OVERDUE"
+                },
+                "creditor": {
+                    "industryType": "Commercial banks",
+                    "industryCode": "BB",
+                    "phoneNumber": "11708747346",
+                    "originalName": "NELNET LOAN SERVICES",
+                    "bureauSubscriberCode": "401BB00573",
+                    "address": {
+                        "addressLine1": "5396 NORTH REESE AVENUE",
+                        "city": "FRESNO",
+                        "state": "CA",
+                        "zip": "93722"
+                    },
+                    "billingAddresses": [
+                        {
+                            "addressLine1": "PO Box 2970",
+                            "addressLine2": "",
+                            "city": "Omaha",
+                            "state": "NE",
+                            "zip": "68103",
+                            "zipExtension": "2970",
+                            "reportedDate": "2007-03-30T00:00:00.000Z",
+                            "reportedDateWithFormat": {
+                                "value": "2007-03-30",
+                                "format": "YYYY-MM-DD"
+                            },
+                            "addressType": "CURRENT"
+                        },
+                        {
+                            "addressLine1": "PO Box 826",
+                            "city": "Indianapolis",
+                            "state": "IN",
+                            "zip": "46206",
+                            "reportedDate": "2022-06-13T00:00:00.000Z",
+                            "reportedDateWithFormat": {
+                                "value": "2022-06-13",
+                                "format": "YYYY-MM-DD"
+                            },
+                            "addressType": "PREVIOUS"
+                        }
+                    ]
+                },
+                "updatedOn": 1719584284109,
+                "createdOn": 1719584284109
+            }
+        ],
+        "miscellaneousLiabilities": [
+            {
+                "miscellaneousLiabilityId": "f1a7b845-82f6-4736-b7c4-bccb94458552",
+                "displayName": "Capital One",
+                "logoUrl": "https://cdn.spinwheel.io/images/logo/ebd6dab9-4558-40c4-8c21-65070a07df5a.png",
+                "liabilityProfile": {
+                    "accountOriginationDate": "2020-01-01",
+                    "status": "CLOSED",
+                    "interestRateDerived": 0,
+                    "loanOriginationAmount": 0,
+                    "highCreditAmount": 0,
+                    "accountRating": "8",
+                    "liabilitySubtype": "UtilityCompany",
+                    "debtType": "UNKNOWN",
+                    "pendingLoanTermInMonthsDerived": 348,
+                    "loanTermInMonths": 360,
+                    "accountNumberLastFour": "1234",
+                    "closedDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "accountOwnershipType": "INDIVIDUAL",
+                    "termsFrequency": "MONTHLY",
+                    "accountType": "REVOLVING",
+                    "reportedDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "lastActivityDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "consumerDisputeStatus": "NOT_DISPUTED",
+                    "derogatoryDataStatus": "DEROGATORY",
+                    "reviewedInMonths": 12,
+                    "collectionStatus": "NOT_IN_COLLECTION",
+                    "chargeOffStatus": "NOT_CHARGED_OFF",
+                    "firstDelinquencyDateWithFormat": {
+                        "value": "2020-11",
+                        "format": "YYYY-MM"
+                    },
+                    "accountTypeCode": "R",
+                    "ecoaCode": "I",
+                    "highestAdverseRating": "R",
+                    "highestAdverseRatingDateWithFormat": {
+                        "value": "2024-05",
+                        "format": "YYYY-MM"
+                    },
+                    "mostRecentAdverseRating": "R",
+                    "mostRecentAdverseRatingDateWithFormat": {
+                        "value": "2024-05",
+                        "format": "YYYY-MM"
+                    },
+                    "secondMostRecentAdverseRating": "6",
+                    "secondMostRecentAdverseRatingDateWithFormat": {
+                        "value": "2024-04",
+                        "format": "YYYY-MM"
+                    },
+                    "adverseRatingCount": 7,
+                    "paymentHistory": {
+                        "lastAssessedStatementDate": "2024-05-01",
+                        "details": [
+                            {
+                                "date": "2024-05-01",
+                                "description": "The collateral for the account has been repossessed",
+                                "code": "R"
+                            },
+                            {
+                                "date": "2024-04-01",
+                                "description": "The account has been late for 6 billing cycle",
+                                "code": "6"
+                            },
+                            {
+                                "date": "2024-03-01",
+                                "description": "The account has been late for 5 billing cycle",
+                                "code": "5"
+                            },
+                            {
+                                "date": "2024-02-01",
+                                "description": "The account has been late for 4 billing cycle",
+                                "code": "4"
+                            },
+                            {
+                                "date": "2024-01-01",
+                                "description": "The account has been late for 3 billing cycle",
+                                "code": "3"
+                            },
+                            {
+                                "date": "2023-12-01",
+                                "description": "The account has been late for 2 billing cycle",
+                                "code": "2"
+                            },
+                            {
+                                "date": "2023-11-01",
+                                "description": "The account has been late for 1 billing cycle",
+                                "code": "1"
+                            },
+                            {
+                                "date": "2023-10-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-09-01",
+                                "description": "No data available for this period",
+                                "code": "D"
+                            },
+                            {
+                                "date": "2023-08-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-07-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            },
+                            {
+                                "date": "2023-06-01",
+                                "description": "The account is current",
+                                "code": "0"
+                            }
+                        ]
+                    },
+                    "liabilityTransfers": {
+                        "transferredFrom": {
+                            "creditorName": "CAPITAL ONE / BEST B"
+                        }
+                    },
+                    "narratives": [
+                        {
+                            "code": "AN",
+                            "description": "Involuntary repossession"
+                        }
+                    ]
+                },
+                "balanceDetails": {
+                    "outstandingBalance": 1383,
+                    "updatedOn": 1719532800000
+                },
+                "capabilities": {
+                    "payments": {
+                        "billPayment": {
+                            "availability": "NOT_SUPPORTED",
+                            "description": "INSTITUTION_NOT_SUPPORTED"
+                        }
+                    },
+                    "data": {
+                        "realtimeBalance": {
+                            "availability": "NOT_SUPPORTED"
+                        },
+                        "statementSummary": {
+                            "availability": "SUPPORTED"
+                        }
+                    }
+                },
+                "statementSummary": {
+                    "statementDateWithFormat": {
+                        "value": "2024-06-28",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "statementBalance": 1383,
+                    "principalBalance": 1383,
+                    "minimumPaymentAmount": 0,
+                    "lastPaymentDateWithFormat": {
+                        "value": "2021-01",
+                        "format": "YYYY-MM"
+                    },
+                    "dueDate": "2024-07-28",
+                    "overduePeriod": "NOT_OVERDUE"
+                },
+                "creditor": {
+                    "industryType": "Cameras",
+                    "industryCode": "JC",
+                    "phoneNumber": "11708747346",
+                    "originalName": "CAP ONE/WOLF CAMERA",
+                    "bureauSubscriberCode": "444JC00300",
+                    "address": {
+                        "addressLine1": "5396 NORTH REESE AVENUE",
+                        "city": "FRESNO",
+                        "state": "CA",
+                        "zip": "93722"
+                    }
+                },
+                "updatedOn": 1719584284136,
+                "createdOn": 1719584284136
+            },
+            {
+                "miscellaneousLiabilityId": "c4d3b42a-7ae2-44d0-9c47-f6b5284f1e2b",
+                "displayName": "Wells Fargo",
+                "logoUrl": "https://cdn.spinwheel.io/images/logo/ebd6dab9-4558-40c4-8c21-65070a07df5a.png",
+                "liabilityProfile": {
+                    "accountOriginationDate": "2024-10-01",
+                    "status": "OPEN",
+                    "loanOriginationAmount": 2800,
+                    "accountRating": "6",
+                    "liabilitySubtype": "Collection",
+                    "debtType": "UNKNOWN",
+                    "accountOwnershipType": "INDIVIDUAL",
+                    "accountType": "UNKNOWN",
+                    "reportedDate": "2024-11-18",
+                    "accountNumberLastFour": "1234",
+                    "reportedDateWithFormat": {
+                        "value": "2024-11-18",
+                        "format": "YYYY-MM-DD"
+                    },
+                    "lastActivityDateWithFormat": {
+                        "value": "2024-11",
+                        "format": "YYYY-MM"
+                    },
+                    "consumerDisputeStatus": "NOT_DISPUTED",
+                    "derogatoryDataStatus": "DEROGATORY",
+                    "collectionStatus": "IN_COLLECTION",
+                    "chargeOffStatus": "NOT_CHARGED_OFF",
+                    "firstDelinquencyDate": "2011-01-01",
+                    "firstDelinquencyDateWithFormat": {
+                        "value": "2011-01",
+                        "format": "YYYY-MM"
+                    },
+                    "ecoaCode": "I",
+                    "liabilityTransfers": {
+                        "transferredFrom": {
+                            "creditorName": "CAPITAL ONE"
+                        }
+                    },
+                    "collectionAccountStatus": "UNPAID"
+                },
+                "balanceDetails": {
+                    "outstandingBalance": 2800,
+                    "updatedOn": 1731888000000
+                },
+                "capabilities": {
+                    "payments": {
+                        "billPayment": {
+                            "availability": "NOT_SUPPORTED",
+                            "description": "INSTITUTION_NOT_SUPPORTED"
+                        }
+                    },
+                    "data": {
+                        "realtimeBalance": {
+                            "availability": "NOT_SUPPORTED"
+                        },
+                        "statementSummary": {
+                            "availability": "SUPPORTED"
+                        }
+                    }
+                },
+                "statementSummary": {
+                    "statementDate": "2024-11-18",
+                    "statementBalance": 2800,
+                    "principalBalance": 2800,
+                    "lastPaymentDate": "2001-01-01",
+                    "lastPaymentDateWithFormat": {
+                        "value": "2001-01",
+                        "format": "YYYY-MM"
+                    },
+                    "dueDate": "2024-12-13",
+                    "overduePeriod": "NOT_OVERDUE"
+                },
+                "creditor": {
+                    "industryType": "Other collection agencies",
+                    "industryCode": "YC",
+                    "originalName": "WELLS FARGO",
+                    "bureauSubscriberCode": "401YC00573"
+                },
+                "updatedOn": 1731952178294,
+                "createdOn": 1731952082115
+            }
+        ],
+        "autoLoanSummary": {
+            "noOfLoans": 1,
+            "currentOutstandingBalance": 7632,
+            "minimumPaymentAmount": 237,
+            "updatedOn": 1678724486968
+        },
+        "homeLoanSummary": {
+            "noOfLoans": 1,
+            "currentOutstandingBalance": 7469,
+            "minimumPaymentAmount": 189,
+            "updatedOn": 1678724487040
+        },
+        "creditCardSummary": {
+            "noOfCreditCards": 1,
+            "currentOutstandingBalance": 100,
+            "availableCredit": 500,
+            "updatedOn": 1678724487080,
+            "creditUtilization": 16.67
+        },
+        "studentLoanSummary": {
+            "noOfLoans": 1,
+            "currentOutstandingBalance": 3941,
+            "minimumPaymentAmount": 131,
+            "updatedOn": 1678724487132,
+            "liabilityGroupPayoffQuotes": [
+                {
+                    "studentLoanIds": [
+                        "187b8bf5-7983-4ec1-ad55-103156e9ac5e"
+                    ],
+                    "liabilityGroupId": "lc444634-40a8-4a62-849d-4e2db7b8a9ad",
+                    "payoffAmount": 28041,
+                    "payoffGoodThroughDate": "2025-05-29",
+                    "updatedOn": 1678724487132
+                }
+            ]
+        },
+        "personalLoanSummary": {
+            "noOfLoans": 1,
+            "currentOutstandingBalance": 2327,
+            "minimumPaymentAmount": 98,
+            "updatedOn": 1678724487171
+        },
+        "miscellaneousLiabilitySummary": {
+            "noOfLoans": 2,
+            "currentOutstandingBalance": 6147,
+            "minimumPaymentAmount": 80,
+            "updatedOn": 1678724486907
+        }
+    }
+}
