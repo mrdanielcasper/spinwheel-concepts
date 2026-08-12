@@ -113,3 +113,75 @@ export function validateVerifyUser(body: any): { valid: boolean; error?: string;
     data: { userId, code }
   };
 }
+
+export const ALLOWED_LIABILITY_TYPES = [
+  'STUDENT_LOAN',
+  'CREDIT_CARD',
+  'HOME_LOAN',
+  'AUTO_LOAN',
+  'PERSONAL_LOAN',
+  'MISCELLANEOUS_LIABILITY'
+];
+
+/**
+ * Validates the parameters for the debt profile request.
+ */
+export function validateDebtProfileParams(userId: any, liabilityType?: any): { valid: boolean; error?: string } {
+  if (!userId || typeof userId !== 'string' || userId.trim() === '') {
+    return { valid: false, error: 'userId must be a non-empty string' };
+  }
+
+  // UUID verification check (optional but recommended since Spinwheel uses UUIDs)
+  const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+  if (!uuidRegex.test(userId)) {
+    return { valid: false, error: 'userId must be a valid UUID format' };
+  }
+
+  if (liabilityType !== undefined && liabilityType !== null && liabilityType !== '') {
+    if (typeof liabilityType !== 'string' || !ALLOWED_LIABILITY_TYPES.includes(liabilityType)) {
+      return { valid: false, error: `Invalid liabilityType. Must be one of: ${ALLOWED_LIABILITY_TYPES.join(', ')}` };
+    }
+  }
+
+  return { valid: true };
+}
+
+export interface BalanceTransferSubmitPayload {
+  userId: string;
+  payments: Array<{
+    liabilityId: string;
+    amountInCents: number;
+    payoffQuoteId?: string;
+  }>;
+}
+
+export function validateBalanceTransferSubmit(body: any): { valid: boolean; error?: string; data?: BalanceTransferSubmitPayload } {
+  if (!body || typeof body !== 'object') {
+    return { valid: false, error: 'Request body must be a JSON object' };
+  }
+
+  const { userId, payments } = body;
+
+  if (!userId || typeof userId !== 'string') {
+    return { valid: false, error: 'userId is required and must be a string' };
+  }
+
+  if (!Array.isArray(payments) || payments.length === 0) {
+    return { valid: false, error: 'payments must be a non-empty array' };
+  }
+
+  for (const item of payments) {
+    if (!item.liabilityId || typeof item.liabilityId !== 'string') {
+      return { valid: false, error: 'Each payment item must have a valid liabilityId string' };
+    }
+    if (typeof item.amountInCents !== 'number' || item.amountInCents <= 0) {
+      return { valid: false, error: 'Each payment item must have a positive amountInCents' };
+    }
+  }
+
+  return {
+    valid: true,
+    data: { userId, payments }
+  };
+}
+

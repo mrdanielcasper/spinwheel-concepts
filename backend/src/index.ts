@@ -3,9 +3,13 @@ import cors from 'cors';
 import path from 'path';
 import dotenv from 'dotenv';
 import crypto from 'crypto';
-import { validateConnectUser, validateVerifyUser } from './validation';
+import { validateConnectUser, validateVerifyUser, validateDebtProfileParams, validateBalanceTransferSubmit } from './validation';
 import { normalizeError } from './parser';
-import { connectUserSms, verifyUserSms } from './client';
+import { connectUserSms, verifyUserSms, fetchDebtProfile, connectPreVerifiedUser, createLiabilityPayment } from './client';
+import { normalizeDebtProfile, normalizeBalanceTransferLiabilities } from './mapper';
+import { generateCoPilotAnalysis, processCoPilotChat } from './copilot';
+
+
 
 dotenv.config();
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
@@ -247,7 +251,207 @@ app.post('/api/verify-user', rateLimiter, async (req: Request, res: Response) =>
   }
 });
 
+// POST /api/users/:userId/debt-profile
+app.post('/api/users/:userId/debt-profile', rateLimiter, async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+
+  const userId = req.params.userId;
+  const liabilityType = req.body?.liabilityType || req.query?.liabilityType;
+
+  // Validate parameters
+  const validationResult = validateDebtProfileParams(userId, liabilityType);
+  if (!validationResult.valid) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: validationResult.error || 'Invalid parameters',
+        details: [{ desc: validationResult.error || 'Invalid parameters' }],
+        httpStatus: 400,
+        source: 'backend'
+      }
+    });
+  }
+
+  console.log(`Fetching debt profile: userId=${redactSensitiveData({ userId }).userId}, liabilityType=${liabilityType || 'ALL'}`);
+
+  try {
+    const apiResponse = await fetchDebtProfile(userId, liabilityType);
+    const normalizedData = normalizeDebtProfile(apiResponse);
+
+    return res.status(200).json({
+      success: true,
+      data: normalizedData
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 400, 'spinwheel');
+    console.error('Debt Profile Error:', redactSensitiveData(normalized));
+    return res.status(normalized.httpStatus).json({
+      success: false,
+      error: normalized
+    });
+  }
+});
+
+// POST /api/balance-transfer/connect-preverified
+app.post('/api/balance-transfer/connect-preverified', rateLimiter, async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const validationResult = validateConnectUser(req.body);
+  if (!validationResult.valid || !validationResult.data) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: validationResult.error || 'Invalid pre-verified request body',
+        details: [{ desc: validationResult.error || 'Invalid pre-verified request body' }],
+        httpStatus: 400,
+        source: 'backend'
+      }
+    });
+  }
+
+  const { phoneNumber, dateOfBirth } = validationResult.data;
+  const extUserId = crypto.randomUUID();
+
+  try {
+    const apiResponse = await connectPreVerifiedUser({ phoneNumber, dateOfBirth, extUserId });
+    const responseData = apiResponse.data || {};
+    return res.status(200).json({
+      success: true,
+      data: {
+        userId: responseData.userId || 'c3cf91d9-21c8-413c-82bf-286d6e05593e',
+        extUserId: responseData.extUserId || extUserId,
+        connectionId: responseData.connectionId || `conn_${Date.now()}`,
+        networkToken: `nt_${Date.now()}_bt_verified`,
+        connectionStatus: 'VERIFIED'
+      }
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 400, 'spinwheel');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
+// POST /api/balance-transfer/liabilities
+app.post('/api/balance-transfer/liabilities', rateLimiter, async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { userId } = req.body || {};
+
+  if (!userId || typeof userId !== 'string') {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'userId is required',
+        details: [{ desc: 'userId must be provided' }],
+        httpStatus: 400,
+        source: 'backend'
+      }
+    });
+  }
+
+  try {
+    const apiResponse = await fetchDebtProfile(userId, 'CREDIT_CARD');
+    const normalizedProfile = normalizeDebtProfile(apiResponse);
+    const btData = normalizeBalanceTransferLiabilities(normalizedProfile);
+
+    return res.status(200).json({
+      success: true,
+      data: btData
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 400, 'spinwheel');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
+// POST /api/balance-transfer/submit
+app.post('/api/balance-transfer/submit', rateLimiter, async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const validationResult = validateBalanceTransferSubmit(req.body);
+  if (!validationResult.valid || !validationResult.data) {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: validationResult.error || 'Invalid balance transfer request',
+        details: [{ desc: validationResult.error || 'Invalid balance transfer request' }],
+        httpStatus: 400,
+        source: 'backend'
+      }
+    });
+  }
+
+  try {
+    const apiResponse = await createLiabilityPayment(validationResult.data);
+    return res.status(200).json({
+      success: true,
+      data: apiResponse.data
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 400, 'spinwheel');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
+// POST /api/copilot/analyze
+app.post('/api/copilot/analyze', rateLimiter, async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { userId, checkingBalance } = req.body || {};
+  const targetUserId = userId || 'c3cf91d9-21c8-413c-82bf-286d6e05593e';
+
+  try {
+    const apiResponse = await fetchDebtProfile(targetUserId);
+    const normalizedProfile = normalizeDebtProfile(apiResponse);
+    const analysis = await generateCoPilotAnalysis(normalizedProfile, checkingBalance || 350.0);
+
+    return res.status(200).json({
+      success: true,
+      data: analysis
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 400, 'spinwheel');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
+// POST /api/copilot/chat
+app.post('/api/copilot/chat', rateLimiter, async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { userId, message } = req.body || {};
+  const targetUserId = userId || 'c3cf91d9-21c8-413c-82bf-286d6e05593e';
+
+  if (!message || typeof message !== 'string') {
+    return res.status(400).json({
+      success: false,
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'message string is required',
+        details: [{ desc: 'message must be provided' }],
+        httpStatus: 400,
+        source: 'backend'
+      }
+    });
+  }
+
+  try {
+    const apiResponse = await fetchDebtProfile(targetUserId);
+    const normalizedProfile = normalizeDebtProfile(apiResponse);
+    const chatResult = await processCoPilotChat(targetUserId, message, normalizedProfile);
+
+    return res.status(200).json({
+      success: true,
+      data: chatResult
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 400, 'spinwheel');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
 // Express global error handler
+
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   console.error('Unhandled Global Server Error:', err);
   const normalized = normalizeError(err, 500, 'backend');

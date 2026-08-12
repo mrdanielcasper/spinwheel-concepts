@@ -52,3 +52,36 @@ export async function connectUser(phoneNumber: string, dateOfBirth: string) {
 export async function verifyUser(userId: string, code: string) {
   return callApi<any>('POST', '/api/verify-user', { userId, code });
 }
+
+export async function fetchDebtProfile(userId: string, liabilityType?: string) {
+  return callApi<any>('POST', `/api/users/${userId}/debt-profile`, { liabilityType });
+}
+
+export async function connectPreVerifiedUser(phoneNumber: string, dateOfBirth: string) {
+  return callApi<any>('POST', '/api/balance-transfer/connect-preverified', { phoneNumber, dateOfBirth });
+}
+
+export async function fetchBalanceTransferLiabilities(userId: string) {
+  return callApi<any>('POST', '/api/balance-transfer/liabilities', { userId });
+}
+
+export async function submitBalanceTransfer(payload: {
+  userId: string;
+  payments: Array<{
+    liabilityId: string;
+    amountInCents: number;
+    payoffQuoteId?: string;
+  }>;
+}) {
+  return callApi<any>('POST', '/api/balance-transfer/submit', payload);
+}
+
+export async function fetchCoPilotAnalysis(userId?: string, checkingBalance?: number) {
+  return callApi<any>('POST', '/api/copilot/analyze', { userId, checkingBalance });
+}
+
+export async function sendCoPilotMessage(userId: string, message: string) {
+  return callApi<any>('POST', '/api/copilot/chat', { userId, message });
+}
+
+

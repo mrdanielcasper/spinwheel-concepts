@@ -8,6 +8,7 @@ interface VerifyFormProps {
   onSuccess: (verifyResponse: any) => void;
   onReset: () => void;
   onRawResponse: (res: any) => void;
+  onViewDebtProfile?: () => void;
 }
 
 export const VerifyForm: React.FC<VerifyFormProps> = ({
@@ -15,7 +16,8 @@ export const VerifyForm: React.FC<VerifyFormProps> = ({
   connectData,
   onSuccess,
   onReset,
-  onRawResponse
+  onRawResponse,
+  onViewDebtProfile
 }) => {
   const [code, setCode] = useState('');
   const [loading, setLoading] = useState(false);
@@ -184,6 +186,16 @@ export const VerifyForm: React.FC<VerifyFormProps> = ({
                 </div>
               )}
             </div>
+
+            {onViewDebtProfile && (
+              <button
+                onClick={onViewDebtProfile}
+                className="w-full rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 py-3 text-sm font-semibold text-white hover:opacity-90 transition-opacity flex items-center justify-center space-x-2 shadow-lg mb-3"
+              >
+                <UserCheck className="w-4 h-4" />
+                <span>View Debt Profile</span>
+              </button>
+            )}
 
             <button
               onClick={onReset}
