@@ -7,11 +7,12 @@ import { AgenticCoPilot } from './components/AgenticCoPilot';
 import { McpDemoViewer } from './components/McpDemoViewer';
 import { RiskOSWaterfall } from './components/RiskOSWaterfall';
 import { QslpEngineViewer } from './components/QslpEngineViewer';
+import { SwaggerDocsViewer } from './components/SwaggerDocsViewer';
 import { DebugPanel } from './components/DebugPanel';
-import { ShieldCheck, RefreshCw, Zap, Users, FileText, ArrowLeftRight, Bot, Server, Award } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Zap, Users, FileText, ArrowLeftRight, Bot, Server, Award, BookOpen } from 'lucide-react';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'connect' | 'debt-profile' | 'balance-transfer' | 'agentic-copilot' | 'mcp-protocol' | 'identity-waterfall' | 'qslp-engine'>('qslp-engine');
+  const [activeTab, setActiveTab] = useState<'connect' | 'debt-profile' | 'balance-transfer' | 'agentic-copilot' | 'mcp-protocol' | 'identity-waterfall' | 'qslp-engine' | 'api-docs'>('api-docs');
   const [step, setStep] = useState<1 | 2>(1);
   const [userId, setUserId] = useState<string | null>(null);
   const [connectData, setConnectData] = useState<any | null>(null);
@@ -140,6 +141,18 @@ export function App() {
               <Server className="w-3.5 h-3.5 text-cyan-400" />
               <span>MCP Protocol</span>
             </button>
+
+            <button
+              onClick={() => setActiveTab('api-docs')}
+              className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === 'api-docs'
+                  ? 'bg-gradient-to-r from-sky-500 via-cyan-600 to-indigo-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5 text-sky-400" />
+              <span>API Docs</span>
+            </button>
           </div>
 
           <div className="flex items-center space-x-4">
@@ -228,6 +241,8 @@ export function App() {
           <RiskOSWaterfall onNavigateToDebtProfile={() => setActiveTab('debt-profile')} />
         ) : activeTab === 'qslp-engine' ? (
           <QslpEngineViewer initialUserId={userId} />
+        ) : activeTab === 'api-docs' ? (
+          <SwaggerDocsViewer />
         ) : (
           <McpDemoViewer initialUserId={userId} />
         )}

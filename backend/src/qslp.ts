@@ -86,20 +86,24 @@ export function evaluateQslpCompliance(
 
   // SCENARIO 1: Alex Morgan - 100% Compliant Nelnet Loan Payment ($350/mo)
   if (scenario === 'COMPLIANT_MATCH') {
+    const annualSalary = customOverrides.annualSalary || 95000;
+    const matchPercent = typeof customOverrides.matchPercent === 'number' ? customOverrides.matchPercent : 0.50;
+    const maxSalaryPercent = typeof customOverrides.maxSalaryPercent === 'number' ? customOverrides.maxSalaryPercent : 0.06;
+    const paymentAmount = typeof customOverrides.paymentAmount === 'number' ? customOverrides.paymentAmount : 350.00;
+
+    const annualCap = annualSalary * maxSalaryPercent * (matchPercent === 1.0 ? 1.0 : 0.5); // Cap
+    const matchAmount = paymentAmount * matchPercent;
+    const cumulativeQslp = 2800.00;
+    const cumulativeMatch = 1400.00;
+
     const employee = {
       fullName: 'Alex Morgan',
       ssnLast4: '4819',
-      annualSalary: 95000,
-      planMatchFormula: '50% match up to 6% salary ($2,850/yr cap)',
+      annualSalary,
+      planMatchFormula: `${(matchPercent * 100).toFixed(0)}% match up to ${(maxSalaryPercent * 100).toFixed(0)}% salary ($${annualCap.toFixed(0)}/yr cap)`,
       employerName: 'Acme Technologies Inc.',
       recordkeeperName: 'Fidelity Investments' as const
     };
-
-    const paymentAmount = 350.00;
-    const matchAmount = paymentAmount * 0.50; // $175.00
-    const cumulativeQslp = 2800.00;
-    const cumulativeMatch = 1400.00;
-    const annualCap = 2850.00;
 
     const fivePointChecks: QslpRuleCheck[] = [
       {
@@ -560,5 +564,43 @@ export function getQslpKpis() {
     hrManualReviewHoursSavedPerMonth: '160+ hours / 1,000 employees',
     auditFailureRateManualKbaVsQslp: '< 0.01% (vs 12.4% manual PDF fraud rate)',
     recordkeeperVendorLockIn: 'Zero Churn (Embedded Compliance Rails)'
+  };
+}
+
+/**
+ * Generate official printable ERISA Fiduciary Safe Harbor Compliance Certificate
+ */
+export function generateQslpAuditCertificate(eventId: string) {
+  const evalResult = evaluateQslpCompliance('COMPLIANT_MATCH');
+  return {
+    certificateId: `IRS-SECURE20-${eventId.toUpperCase()}`,
+    issuedDate: new Date().toISOString(),
+    regulatoryFramework: 'SECURE 2.0 Act of 2022 § 110 & IRS Notice 2024-63',
+    fiduciarySafeHarborStatus: 'CERTIFIED_SAFE_HARBOR',
+    planSponsor: {
+      employer: 'Acme Technologies Inc.',
+      einMasked: 'XX-XXX8921',
+      recordkeeper: 'Fidelity Investments',
+      planYear: 2026
+    },
+    participant: {
+      name: 'Alex Morgan',
+      ssnMasked: '***-**-4819',
+      annualSalary: 95000,
+      eligibleQslpMatch: 175.00
+    },
+    servicerVerification: {
+      servicer: 'Nelnet Servicing, LLC',
+      loanType: 'Direct Subsidized Stafford (IRC § 221(d)(1))',
+      settledAmount: 350.00,
+      settlementDate: '2026-08-01',
+      payorMatchScore: '100% Verified Match'
+    },
+    cryptographicIntegrity: {
+      merkleDataHash: evalResult.auditTrail.dataHash,
+      hashingAlgorithm: 'SHA-256',
+      dolAuditReadiness: 'IMMEDIATELY_SUBMISSIBLE'
+    },
+    legalAttestation: 'This certificate constitutes verifiable electronic proof under ERISA Section 404(c) and IRS Notice 2024-63 § III. No employer matching contribution made in reliance upon this verified data payload shall trigger plan disqualification.'
   };
 }

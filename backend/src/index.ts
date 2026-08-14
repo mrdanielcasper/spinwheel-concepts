@@ -9,7 +9,8 @@ import { connectUserSms, verifyUserSms, fetchDebtProfile, connectPreVerifiedUser
 import { normalizeDebtProfile, normalizeBalanceTransferLiabilities } from './mapper';
 import { generateCoPilotAnalysis, processCoPilotChat, simulatePayoffStrategies, calculateDebtMetrics } from './copilot';
 import { orchestrateIdentityWaterfall, getWaterfallKpis, getRiskOSEvaluation } from './socure';
-import { evaluateQslpCompliance, dispatchQslpRecordkeeperMatch, getQslpKpis } from './qslp';
+import { evaluateQslpCompliance, dispatchQslpRecordkeeperMatch, getQslpKpis, generateQslpAuditCertificate } from './qslp';
+import { openApiSpec } from './openapi';
 
 
 
@@ -581,10 +582,26 @@ app.post('/api/identity/waterfall/webhook', (req: Request, res: Response) => {
 // POST /api/qslp/evaluate
 app.post('/api/qslp/evaluate', rateLimiter, (req: Request, res: Response) => {
   setNoCacheHeaders(res);
-  const { scenario, customOverrides } = req.body || {};
+  const body = req.body || {};
+  const scenario = body.scenario || 'COMPLIANT_MATCH';
+  const customOverrides = {
+    ...body.customOverrides,
+    ...body.planMatchRules,
+    ...(body.paymentDetails ? {
+      paymentAmount: body.paymentDetails.paymentAmount,
+      servicerName: body.paymentDetails.servicerName,
+      payorAccountOwner: body.paymentDetails.payorAccountOwner,
+      paymentDate: body.paymentDetails.paymentDate
+    } : {}),
+    ...(body.employeeId ? { employeeId: body.employeeId } : {}),
+    ...(body.annualSalary ? { annualSalary: body.annualSalary } : {}),
+    ...(body.matchPercentage ? { matchPercent: body.matchPercentage } : {}),
+    ...(body.maxSalaryPercentage ? { maxSalaryPercent: body.maxSalaryPercentage } : {}),
+    ...(body.paymentAmount ? { paymentAmount: body.paymentAmount } : {})
+  };
 
   try {
-    const result = evaluateQslpCompliance(scenario || 'COMPLIANT_MATCH', customOverrides);
+    const result = evaluateQslpCompliance(scenario, customOverrides);
     return res.status(200).json({
       success: true,
       data: result
@@ -622,6 +639,109 @@ app.get('/api/qslp/kpis', (req: Request, res: Response) => {
     success: true,
     data: getQslpKpis()
   });
+});
+
+// GET /api/qslp/certificate/:eventId
+app.get('/api/qslp/certificate/:eventId', (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { eventId } = req.params;
+  return res.status(200).json({
+    success: true,
+    data: generateQslpAuditCertificate(eventId || 'qslp_evt_89230114')
+  });
+});
+
+// ==========================================
+// OPENAPI 3.0 & SWAGGER UI DOCUMENTATION
+// ==========================================
+
+// GET /api/docs/openapi.json
+app.get('/api/docs/openapi.json', (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  res.setHeader('Content-Type', 'application/json');
+  return res.status(200).json(openApiSpec);
+});
+
+// GET /api/docs (Interactive Swagger UI)
+app.get('/api/docs', (req: Request, res: Response) => {
+  res.setHeader('Content-Type', 'text/html');
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spinwheel Platform - OpenAPI & Swagger UI</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui.css" />
+  <link rel="icon" type="image/png" href="https://spinwheel.io/favicon.ico" />
+  <style>
+    html { box-sizing: border-box; overflow: -moz-scrollbars-vertical; overflow-y: scroll; }
+    *, *:before, *:after { box-sizing: inherit; }
+    body { margin: 0; background: #0b0f19; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .swagger-ui { color: #f1f5f9; }
+    .swagger-ui .topbar { display: none; }
+    .swagger-ui .info .title { color: #38bdf8; font-weight: 800; font-size: 28px; }
+    .swagger-ui .info p, .swagger-ui .info li { color: #94a3b8; }
+    .swagger-ui .scheme-container { background: #0f172a; box-shadow: none; border-bottom: 1px solid #1e293b; }
+    .swagger-ui .opblock { border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid #1e293b; background: #0f172a; margin-bottom: 14px; }
+    .swagger-ui .opblock .opblock-summary { border-bottom: none; }
+    .swagger-ui .opblock .opblock-summary-path { color: #f8fafc; font-weight: 600; }
+    .swagger-ui .opblock .opblock-summary-description { color: #94a3b8; }
+    .swagger-ui .opblock-tag { color: #38bdf8; font-size: 18px; border-bottom: 1px solid #1e293b; }
+    .swagger-ui .opblock.opblock-post { border-color: rgba(16, 185, 129, 0.4); background: rgba(6, 78, 59, 0.15); }
+    .swagger-ui .opblock.opblock-post .opblock-summary-method { background: #059669; }
+    .swagger-ui .opblock.opblock-get { border-color: rgba(56, 189, 248, 0.4); background: rgba(12, 74, 110, 0.15); }
+    .swagger-ui .opblock.opblock-get .opblock-summary-method { background: #0284c7; }
+    .swagger-ui table thead tr td, .swagger-ui table thead tr th { color: #94a3b8; border-bottom: 1px solid #334155; }
+    .swagger-ui .tab li button.tablinks { color: #94a3b8; }
+    .swagger-ui .tab li.active button.tablinks { color: #38bdf8; font-weight: bold; }
+    .swagger-ui .btn.execute { background-color: #0284c7; color: #fff; border-color: #0284c7; border-radius: 8px; font-weight: bold; }
+    .swagger-ui .btn.try-out__btn { background: #1e293b; color: #38bdf8; border-color: #334155; border-radius: 6px; }
+    .swagger-ui select, .swagger-ui input[type=text] { background: #020617; color: #f8fafc; border: 1px solid #334155; border-radius: 6px; }
+    .custom-header { background: linear-gradient(135deg, #0f172a 0%, #020617 100%); border-bottom: 1px solid #1e293b; padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; }
+    .custom-logo { display: flex; align-items: center; gap: 12px; }
+    .custom-logo-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #8b5cf6, #ec4899); display: flex; align-items: center; justify-content: center; font-weight: 900; color: white; }
+    .custom-logo-text { font-size: 18px; font-weight: 800; color: white; letter-spacing: -0.5px; }
+    .custom-badge { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: #38bdf8; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-family: monospace; }
+  </style>
+</head>
+<body>
+  <div class="custom-header">
+    <div class="custom-logo">
+      <div class="custom-logo-icon">S</div>
+      <div class="custom-logo-text">Spinwheel Developer API Reference</div>
+      <span class="custom-badge">OpenAPI 3.0.3</span>
+    </div>
+    <div>
+      <a href="http://localhost:5173" style="color: #94a3b8; text-decoration: none; font-size: 13px; margin-right: 16px;">← Back to Demo App</a>
+      <a href="/api/docs/openapi.json" target="_blank" style="background: #1e293b; color: #38bdf8; padding: 6px 12px; border-radius: 8px; text-decoration: none; font-size: 12px; font-weight: 600; border: 1px solid #334155;">Download openapi.json ↗</a>
+    </div>
+  </div>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5.11.0/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function() {
+      const ui = SwaggerUIBundle({
+        url: "/api/docs/openapi.json",
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [
+          SwaggerUIBundle.presets.apis,
+          SwaggerUIStandalonePreset
+        ],
+        plugins: [
+          SwaggerUIBundle.plugins.DownloadUrl
+        ],
+        layout: "BaseLayout",
+        defaultModelsExpandDepth: -1,
+        docExpansion: "list",
+        filter: true
+      });
+      window.ui = ui;
+    };
+  </script>
+</body>
+</html>`;
+  return res.send(html);
 });
 
 // Express global error handler

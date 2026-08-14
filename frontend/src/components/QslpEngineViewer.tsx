@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Award, CheckCircle2, XCircle, Play, RefreshCw, 
-  Layers, Terminal, Briefcase, Calculator,
-  TrendingUp, Send, Check, Hash, FileCheck2, Scale
+  Layers, Terminal, Calculator,
+  TrendingUp, Send, Check, Hash, FileCheck2, Scale,
+  UserCheck, Building2, Landmark, Sliders, Shield, Printer,
+  X
 } from 'lucide-react';
 import { evaluateQslpPayment, dispatchQslpMatch, fetchQslpKpis } from '../utils/api';
 
@@ -16,7 +18,21 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
   const [result, setResult] = useState<any | null>(null);
   const [kpis, setKpis] = useState<any | null>(null);
   const [activeJsonTab, setActiveJsonTab] = useState<'compliance' | 'tradeline' | 'dispatch'>('compliance');
-  const [showPmExecutiveCase, setShowPmExecutiveCase] = useState(true);
+
+  // Audience Persona View: 'EMPLOYEE' | 'EMPLOYER_HRIS' | 'RECORDKEEPER_FIDELITY'
+  const [audiencePersona, setAudiencePersona] = useState<'EMPLOYEE' | 'EMPLOYER_HRIS' | 'RECORDKEEPER_FIDELITY'>('RECORDKEEPER_FIDELITY');
+
+  // Interactive Plan Match Formula Customizer
+  const [showFormulaCustomizer, setShowFormulaCustomizer] = useState(false);
+  const [customSalary, setCustomSalary] = useState<number>(95000);
+  const [customMatchPercent, setCustomMatchPercent] = useState<number>(0.50);
+  const [customMaxSalaryPercent, setCustomMaxSalaryPercent] = useState<number>(0.06);
+  const [customPaymentAmount, setCustomPaymentAmount] = useState<number>(350);
+
+  // Certificate Modal State
+  const [showCertificateModal, setShowCertificateModal] = useState(false);
+  const [certificateData, setCertificateData] = useState<any | null>(null);
+  const [fetchingCertificate, setFetchingCertificate] = useState(false);
 
   // Dispatch state
   const [dispatching, setDispatching] = useState(false);
@@ -39,18 +55,37 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
     }
   };
 
-  const runEvaluation = async (scenario: 'COMPLIANT_MATCH' | 'THIRD_PARTY_PAYOR_REJECT' | 'NON_QUALIFIED_DEBT_REJECT' | 'CAP_REACHED') => {
+  const runEvaluation = async (
+    scenario: 'COMPLIANT_MATCH' | 'THIRD_PARTY_PAYOR_REJECT' | 'NON_QUALIFIED_DEBT_REJECT' | 'CAP_REACHED',
+    overrides?: any
+  ) => {
     setSelectedScenario(scenario);
     setLoading(true);
     setResult(null);
     setDispatchResult(null);
 
-    const res = await evaluateQslpPayment(scenario);
+    const customOverrides = overrides || (scenario === 'COMPLIANT_MATCH' ? {
+      annualSalary: customSalary,
+      matchPercent: customMatchPercent,
+      maxSalaryPercent: customMaxSalaryPercent,
+      paymentAmount: customPaymentAmount
+    } : {});
+
+    const res = await evaluateQslpPayment(scenario, customOverrides);
     setLoading(false);
 
     if (res.success && res.data) {
       setResult(res.data);
     }
+  };
+
+  const handleApplyCustomFormula = () => {
+    runEvaluation('COMPLIANT_MATCH', {
+      annualSalary: customSalary,
+      matchPercent: customMatchPercent,
+      maxSalaryPercent: customMaxSalaryPercent,
+      paymentAmount: customPaymentAmount
+    });
   };
 
   const handleDispatchRecordkeeper = async () => {
@@ -61,6 +96,22 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
     if (res.success && res.data) {
       setDispatchResult(res.data);
     }
+  };
+
+  const handleOpenCertificate = async () => {
+    if (!result) return;
+    setFetchingCertificate(true);
+    setShowCertificateModal(true);
+    try {
+      const res = await fetch(`http://localhost:3001/api/qslp/certificate/${result.eventId}`);
+      const data = await res.json();
+      if (data.success) {
+        setCertificateData(data.data);
+      }
+    } catch (err) {
+      console.error('Failed to load certificate', err);
+    }
+    setFetchingCertificate(false);
   };
 
   const annualPepmRevenue = cohortSize * pepmRate * 12;
@@ -90,7 +141,7 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
             </div>
           </div>
 
-          <div className="flex flex-col sm:items-end gap-1.5">
+          <div className="flex flex-col sm:flex-items-end gap-1.5">
             <div className="flex items-center space-x-2 bg-slate-900/90 px-3.5 py-1.5 rounded-xl border border-slate-800 text-xs font-mono text-slate-300">
               <Scale className="w-4 h-4 text-emerald-400" />
               <span>ERISA Fiduciary Safe Harbor</span>
@@ -102,36 +153,81 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
           </div>
         </div>
 
-        {/* Executive Business Case / PM Narrative Drawer */}
-        <div className="bg-slate-900/80 rounded-xl p-5 border border-emerald-500/25 mb-6 text-xs text-slate-300 space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="font-bold text-emerald-300 flex items-center space-x-2 text-sm">
-              <Briefcase className="w-4 h-4 text-emerald-400" />
-              <span>Executive Pitch: Unlocking 401(k) Recordkeepers with Turnkey QSLP Middleware</span>
-            </div>
-            <button 
-              onClick={() => setShowPmExecutiveCase(!showPmExecutiveCase)}
-              className="text-[11px] text-emerald-400 hover:text-emerald-300 underline font-medium"
-            >
-              {showPmExecutiveCase ? 'Hide Executive Summary' : 'Show Executive Summary & TCO'}
-            </button>
-          </div>
+        {/* 3-Stakeholder Audience Persona Switcher (For Ryerson / Head of Product) */}
+        <div className="mb-6 bg-slate-950 p-1.5 rounded-xl border border-slate-800 flex flex-col sm:flex-row items-center gap-1.5">
+          <span className="text-[11px] font-mono text-slate-500 px-3 py-1 font-bold">Demo Lens:</span>
+          
+          <button
+            onClick={() => setAudiencePersona('EMPLOYEE')}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center space-x-2 transition-all ${
+              audiencePersona === 'EMPLOYEE'
+                ? 'bg-emerald-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <UserCheck className="w-3.5 h-3.5" />
+            <span>1. Employee Experience (10s Connect)</span>
+          </button>
 
-          {showPmExecutiveCase && (
-            <div className="pt-3 border-t border-slate-800 space-y-3 text-slate-300 text-xs leading-relaxed">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <div className="bg-slate-950/70 p-3.5 rounded-lg border border-slate-800/80">
-                  <span className="font-bold text-red-300 block mb-1">Current Problem (Manual PDFs)</span>
-                  <p className="text-[11px] text-slate-400">401(k) recordkeepers (Fidelity, Empower) and HR platforms (Rippling, Gusto) are drowning in manual PDF statement reviews or self-certification fraud to satisfy IRS Notice 2024-63.</p>
-                </div>
-                <div className="bg-slate-950/70 p-3.5 rounded-lg border border-slate-800/80">
-                  <span className="font-bold text-emerald-300 block mb-1">Spinwheel QSLP Solution</span>
-                  <p className="text-[11px] text-slate-400">Automated 5-point IRS rule engine verifies loan type, settled payment amount, date, employee payor identity, and good standing in &lt;500ms with cryptographic SHA-256 audit hashes.</p>
-                </div>
-                <div className="bg-slate-950/70 p-3.5 rounded-lg border border-slate-800/80">
-                  <span className="font-bold text-teal-300 block mb-1">Commercial Upsell (12.5x ARR)</span>
-                  <p className="text-[11px] text-slate-400">Moves Spinwheel up the value chain from selling $0.20 raw API lookups to commanding $2.50 PEPM enterprise SaaS contracts with zero customer churn.</p>
-                </div>
+          <button
+            onClick={() => setAudiencePersona('EMPLOYER_HRIS')}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center space-x-2 transition-all ${
+              audiencePersona === 'EMPLOYER_HRIS'
+                ? 'bg-teal-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Building2 className="w-3.5 h-3.5" />
+            <span>2. Employer & HRIS (Rippling/Gusto)</span>
+          </button>
+
+          <button
+            onClick={() => setAudiencePersona('RECORDKEEPER_FIDELITY')}
+            className={`flex-1 py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center space-x-2 transition-all ${
+              audiencePersona === 'RECORDKEEPER_FIDELITY'
+                ? 'bg-cyan-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <Landmark className="w-3.5 h-3.5" />
+            <span>3. 401(k) Recordkeeper (Fidelity/Empower)</span>
+          </button>
+        </div>
+
+        {/* Persona Perspective Context Box */}
+        <div className="bg-slate-900/90 rounded-xl p-4 border border-slate-800/90 mb-6 text-xs text-slate-300">
+          {audiencePersona === 'EMPLOYEE' && (
+            <div className="flex items-start space-x-3">
+              <UserCheck className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-white block text-sm">Employee Perspective: 100% Frictionless Benefit Activation</strong>
+                <p className="text-slate-400 mt-1 leading-relaxed">
+                  Borrower types phone + DOB into benefits portal. Spinwheel connects to Nelnet in 10 seconds. When borrower makes their monthly $350 loan payment, they receive a push notification: <em>"🎉 $175 401(k) Match deposited to your Fidelity account!"</em> Zero paper PDFs or self-certification hassle.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {audiencePersona === 'EMPLOYER_HRIS' && (
+            <div className="flex items-start space-x-3">
+              <Building2 className="w-5 h-5 text-teal-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-white block text-sm">Employer / HRIS Perspective: Eliminates 160+ Hours of PDF Fraud Reviews</strong>
+                <p className="text-slate-400 mt-1 leading-relaxed">
+                  Plan sponsors satisfy IRS Notice 2024-63 safe-harbor standards with zero administrative overhead. Spinwheel automatically reconciles payment settlement dates, employee ownership, and plan-year matching ceilings before syncing payroll deductions.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {audiencePersona === 'RECORDKEEPER_FIDELITY' && (
+            <div className="flex items-start space-x-3">
+              <Landmark className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-white block text-sm">401(k) Recordkeeper Perspective: Automated Fiduciary Safe Harbor Subledger</strong>
+                <p className="text-slate-400 mt-1 leading-relaxed">
+                  Fidelity/Empower ingests structured JSON compliance events with cryptographic SHA-256 Merkle hashes. Protects retirement plans from disqualification under ERISA Section 404(c) non-discrimination testing.
+                </p>
               </div>
             </div>
           )}
@@ -144,7 +240,13 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
               <Play className="w-3.5 h-3.5 text-emerald-400" />
               <span>Select Live Demo Persona & Payment Scenario:</span>
             </span>
-            <span className="font-mono text-[11px] text-slate-500">IRS Notice 2024-63 Test Cases</span>
+            <button
+              onClick={() => setShowFormulaCustomizer(!showFormulaCustomizer)}
+              className="text-[11px] text-emerald-400 hover:text-emerald-300 flex items-center space-x-1 font-mono"
+            >
+              <Sliders className="w-3 h-3" />
+              <span>{showFormulaCustomizer ? 'Close Plan Customizer' : 'Customize Plan Match Formula'}</span>
+            </button>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
@@ -160,7 +262,7 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                 <span className="font-bold text-xs text-emerald-300">🟢 100% Compliant Match</span>
               </div>
-              <p className="text-[11px] text-slate-400 leading-tight">Alex Morgan ($350 Nelnet $\to$ $175 Match)</p>
+              <p className="text-[11px] text-slate-400 leading-tight">Alex Morgan ($350 Nelnet $\to$ Match Approved)</p>
               <span className="text-[10px] text-emerald-400/90 font-mono block mt-1.5 font-bold">Approved for Fidelity 401(k)</span>
             </button>
 
@@ -212,6 +314,76 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
               <span className="text-[10px] text-cyan-400/90 font-mono block mt-1.5 font-bold">Partial Cap Match Disbursed</span>
             </button>
           </div>
+
+          {/* Interactive Plan Formula Customizer Drawer */}
+          {showFormulaCustomizer && (
+            <div className="bg-slate-950 p-5 rounded-xl border border-emerald-500/40 space-y-4 animate-in fade-in">
+              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                <span className="font-bold text-xs text-emerald-300 flex items-center space-x-1.5">
+                  <Sliders className="w-3.5 h-3.5" />
+                  <span>Dynamic Plan Document Matching Rules (Employer Formula Editor)</span>
+                </span>
+                <span className="text-[11px] text-slate-500 font-mono">Live Recalculation</span>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+                <div>
+                  <label className="text-slate-400 block mb-1">Annual Salary ($):</label>
+                  <input
+                    type="number"
+                    value={customSalary}
+                    onChange={(e) => setCustomSalary(Number(e.target.value))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-slate-400 block mb-1">Match Percentage (%):</label>
+                  <select
+                    value={customMatchPercent}
+                    onChange={(e) => setCustomMatchPercent(Number(e.target.value))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white font-mono"
+                  >
+                    <option value={0.50}>50% Match (Standard)</option>
+                    <option value={1.00}>100% Dollar-for-Dollar</option>
+                    <option value={0.25}>25% Match</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-slate-400 block mb-1">Max Deferral Cap (% Salary):</label>
+                  <select
+                    value={customMaxSalaryPercent}
+                    onChange={(e) => setCustomMaxSalaryPercent(Number(e.target.value))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white font-mono"
+                  >
+                    <option value={0.06}>Up to 6% of Salary</option>
+                    <option value={0.04}>Up to 4% of Salary</option>
+                    <option value={0.08}>Up to 8% of Salary</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-slate-400 block mb-1">Monthly Payment Amount ($):</label>
+                  <input
+                    type="number"
+                    value={customPaymentAmount}
+                    onChange={(e) => setCustomPaymentAmount(Number(e.target.value))}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-white font-mono"
+                  />
+                </div>
+              </div>
+
+              <div className="flex justify-end">
+                <button
+                  onClick={handleApplyCustomFormula}
+                  className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs shadow-md transition-colors"
+                >
+                  Apply & Recompute 401(k) Match
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
@@ -348,7 +520,15 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
               </div>
 
               {result.complianceStatus === 'VERIFIED_COMPLIANT' && (
-                <div className="shrink-0">
+                <div className="flex flex-wrap items-center gap-2 shrink-0">
+                  <button
+                    onClick={handleOpenCertificate}
+                    className="px-3.5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono text-emerald-300 flex items-center space-x-1.5 transition-colors"
+                  >
+                    <Printer className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>View Audit Certificate</span>
+                  </button>
+
                   <button
                     onClick={handleDispatchRecordkeeper}
                     disabled={dispatching || !!dispatchResult}
@@ -366,7 +546,7 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
                     ) : (
                       <>
                         <Send className="w-4 h-4" />
-                        <span>{dispatching ? 'Dispatching...' : `Dispatch $${result.matchCalculation?.employerMatchAmount?.toFixed(2)} Match to Recordkeeper`}</span>
+                        <span>{dispatching ? 'Dispatching...' : `Dispatch $${result.matchCalculation?.employerMatchAmount?.toFixed(2)} Match`}</span>
                       </>
                     )}
                   </button>
@@ -615,6 +795,94 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
                 action: 'Click Dispatch Match Button above to post to Recordkeeper Ledger'
               }, null, 2)}
             </pre>
+          </div>
+        </div>
+      )}
+
+      {/* Official ERISA Fiduciary Compliance Certificate Modal */}
+      {showCertificateModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div className="bg-slate-900 border border-emerald-500/50 rounded-2xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto relative">
+            
+            <button
+              onClick={() => setShowCertificateModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white p-1 rounded-lg bg-slate-800"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Certificate Header */}
+            <div className="text-center border-b border-slate-800 pb-5 space-y-1">
+              <div className="inline-flex p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 mb-2">
+                <Shield className="w-8 h-8" />
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black text-white">ERISA Fiduciary Safe Harbor Compliance Certificate</h2>
+              <p className="text-xs font-mono text-emerald-400">IRS Notice 2024-63 § III & SECURE 2.0 Act § 110</p>
+            </div>
+
+            {fetchingCertificate ? (
+              <div className="py-12 text-center text-slate-400">Loading Certificate...</div>
+            ) : certificateData ? (
+              <div className="space-y-4 text-xs">
+                
+                <div className="grid grid-cols-2 gap-3 bg-slate-950 p-4 rounded-xl border border-slate-800">
+                  <div>
+                    <span className="text-slate-500 block">Certificate ID:</span>
+                    <strong className="text-white font-mono">{certificateData.certificateId}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Fiduciary Status:</span>
+                    <strong className="text-emerald-400 font-mono">{certificateData.fiduciarySafeHarborStatus}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">Plan Sponsor:</span>
+                    <strong className="text-white">{certificateData.planSponsor?.employer}</strong>
+                  </div>
+                  <div>
+                    <span className="text-slate-500 block">401(k) Recordkeeper:</span>
+                    <strong className="text-white">{certificateData.planSponsor?.recordkeeper}</strong>
+                  </div>
+                </div>
+
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                  <span className="text-slate-400 font-bold block">Servicer Direct Verification Snapshot:</span>
+                  <div className="grid grid-cols-2 gap-2 text-slate-300 font-mono text-[11px]">
+                    <div>Servicer: {certificateData.servicerVerification?.servicer}</div>
+                    <div>Settled: ${certificateData.servicerVerification?.settledAmount?.toFixed(2)}</div>
+                    <div>Date: {certificateData.servicerVerification?.settlementDate}</div>
+                    <div>Payor Match: {certificateData.servicerVerification?.payorMatchScore}</div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-1">
+                  <span className="text-slate-400 font-bold block">Cryptographic Merkle Proof:</span>
+                  <div className="font-mono text-[10px] text-emerald-300 break-all bg-black/60 p-2 rounded border border-slate-800">
+                    SHA-256: {certificateData.cryptographicIntegrity?.merkleDataHash}
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-[11px] text-slate-300 leading-relaxed italic">
+                  "{certificateData.legalAttestation}"
+                </div>
+
+                <div className="flex justify-between items-center pt-2">
+                  <button
+                    onClick={() => window.print()}
+                    className="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-mono text-xs flex items-center space-x-1.5"
+                  >
+                    <Printer className="w-3.5 h-3.5" />
+                    <span>Print / Save PDF</span>
+                  </button>
+
+                  <button
+                    onClick={() => setShowCertificateModal(false)}
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold text-xs"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            ) : null}
           </div>
         </div>
       )}
