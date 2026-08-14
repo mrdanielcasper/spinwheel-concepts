@@ -97,8 +97,12 @@ export async function verifyUserSms(userId: string, code: string) {
 }
 
 
+// In-memory cache for debt profiles to prevent hitting Sandbox 1-call daily limits
+const debtProfileCache = new Map<string, { data: any; timestamp: number }>();
+const DEBT_PROFILE_CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
 /**
- * Load reference mock profile if sandbox user lacks an active connection.
+ * Load reference mock profile if sandbox user lacks an active connection or exhausts quota.
  */
 export function getReferenceDebtProfile(userId: string) {
   try {
@@ -118,9 +122,18 @@ export function getReferenceDebtProfile(userId: string) {
 }
 
 /**
- * Call POST /v1/users/{userId}/debtProfile
+ * Call POST /v1/users/{userId}/debtProfile with caching & zero-failure sandbox fallback
  */
 export async function fetchDebtProfile(userId: string, liabilityType?: string) {
+  const cacheKey = `${userId || 'default'}_${liabilityType || 'ALL'}`;
+  
+  // 1. Check in-memory cache
+  const cached = debtProfileCache.get(cacheKey);
+  if (cached && (Date.now() - cached.timestamp < DEBT_PROFILE_CACHE_TTL_MS)) {
+    console.log(`[Cache Hit] Serving cached debt profile for userId=${userId}`);
+    return cached.data;
+  }
+
   const query = liabilityType ? `?liabilityType=${encodeURIComponent(liabilityType)}` : '';
   const body = {
     creditReport: {
@@ -130,20 +143,30 @@ export async function fetchDebtProfile(userId: string, liabilityType?: string) {
       model: 'VANTAGE_SCORE_3_0'
     }
   };
-  try {
-    return await request('POST', `/users/${userId}/debtProfile${query}`, body);
-  } catch (error: any) {
-    const errString = JSON.stringify(error || {});
-    if (
-      errString.includes('No connection was found') || 
-      errString.includes('Connect the user before ordering a report') || 
-      userId === 'c3cf91d9-21c8-413c-82bf-286d6e05593e'
-    ) {
-      console.log(`Using reference debt profile fallback for userId=[REDACTED_USER_ID] (No active sandbox connection)`);
 
-      const refData = getReferenceDebtProfile(userId);
-      if (refData) return refData;
+  try {
+    const res = await request('POST', `/users/${userId}/debtProfile${query}`, body);
+    if (res && res.data) {
+      debtProfileCache.set(cacheKey, { data: res, timestamp: Date.now() });
     }
+    return res;
+  } catch (error: any) {
+    console.warn(`[Spinwheel API Fallback Triggered] Error fetching live debt profile for ${userId}:`, error?.message || error);
+    
+    // If we have an existing cache (even if older), return it
+    if (cached) {
+      console.log(`[Cache Fallback] Returning previous cached profile for userId=${userId}`);
+      return cached.data;
+    }
+
+    // Gracefully fallback to reference Equifax debt profile so demo/app never breaks
+    const refData = getReferenceDebtProfile(userId);
+    if (refData) {
+      console.log(`[Reference Fallback] Returning reference mock profile for demo stability.`);
+      debtProfileCache.set(cacheKey, { data: refData, timestamp: Date.now() });
+      return refData;
+    }
+
     throw error;
   }
 }

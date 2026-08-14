@@ -7,7 +7,7 @@ import { validateConnectUser, validateVerifyUser, validateDebtProfileParams, val
 import { normalizeError } from './parser';
 import { connectUserSms, verifyUserSms, fetchDebtProfile, connectPreVerifiedUser, createLiabilityPayment } from './client';
 import { normalizeDebtProfile, normalizeBalanceTransferLiabilities } from './mapper';
-import { generateCoPilotAnalysis, processCoPilotChat } from './copilot';
+import { generateCoPilotAnalysis, processCoPilotChat, simulatePayoffStrategies, calculateDebtMetrics } from './copilot';
 
 
 
@@ -397,12 +397,16 @@ app.post('/api/balance-transfer/submit', rateLimiter, async (req: Request, res: 
 // POST /api/copilot/analyze
 app.post('/api/copilot/analyze', rateLimiter, async (req: Request, res: Response) => {
   setNoCacheHeaders(res);
-  const { userId, checkingBalance } = req.body || {};
+  const { userId, checkingBalance, cachedProfile } = req.body || {};
   const targetUserId = userId || 'c3cf91d9-21c8-413c-82bf-286d6e05593e';
 
   try {
-    const apiResponse = await fetchDebtProfile(targetUserId);
-    const normalizedProfile = normalizeDebtProfile(apiResponse);
+    let normalizedProfile = cachedProfile;
+    if (!normalizedProfile || !Array.isArray(normalizedProfile.liabilities)) {
+      const apiResponse = await fetchDebtProfile(targetUserId);
+      normalizedProfile = normalizeDebtProfile(apiResponse);
+    }
+
     const analysis = await generateCoPilotAnalysis(normalizedProfile, checkingBalance || 350.0);
 
     return res.status(200).json({
@@ -418,7 +422,7 @@ app.post('/api/copilot/analyze', rateLimiter, async (req: Request, res: Response
 // POST /api/copilot/chat
 app.post('/api/copilot/chat', rateLimiter, async (req: Request, res: Response) => {
   setNoCacheHeaders(res);
-  const { userId, message } = req.body || {};
+  const { userId, message, conversationHistory, cachedProfile } = req.body || {};
   const targetUserId = userId || 'c3cf91d9-21c8-413c-82bf-286d6e05593e';
 
   if (!message || typeof message !== 'string') {
@@ -435,13 +439,56 @@ app.post('/api/copilot/chat', rateLimiter, async (req: Request, res: Response) =
   }
 
   try {
-    const apiResponse = await fetchDebtProfile(targetUserId);
-    const normalizedProfile = normalizeDebtProfile(apiResponse);
-    const chatResult = await processCoPilotChat(targetUserId, message, normalizedProfile);
+    let normalizedProfile = cachedProfile;
+    if (!normalizedProfile || !Array.isArray(normalizedProfile.liabilities)) {
+      const apiResponse = await fetchDebtProfile(targetUserId);
+      normalizedProfile = normalizeDebtProfile(apiResponse);
+    }
+
+    const chatResult = await processCoPilotChat(
+      targetUserId, 
+      message, 
+      normalizedProfile, 
+      Array.isArray(conversationHistory) ? conversationHistory : []
+    );
 
     return res.status(200).json({
       success: true,
       data: chatResult
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 400, 'spinwheel');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
+// POST /api/copilot/simulate
+app.post('/api/copilot/simulate', rateLimiter, async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { userId, extraMonthlyAmount, checkingBalance, cachedProfile } = req.body || {};
+  const targetUserId = userId || 'c3cf91d9-21c8-413c-82bf-286d6e05593e';
+
+  try {
+    let normalizedProfile = cachedProfile;
+    if (!normalizedProfile || !Array.isArray(normalizedProfile.liabilities)) {
+      const apiResponse = await fetchDebtProfile(targetUserId);
+      normalizedProfile = normalizeDebtProfile(apiResponse);
+    }
+
+    const liabilities = normalizedProfile.liabilities || [];
+    const extra = typeof extraMonthlyAmount === 'number' ? extraMonthlyAmount : 200;
+    const balance = typeof checkingBalance === 'number' ? checkingBalance : 350;
+
+    const metrics = calculateDebtMetrics(liabilities, balance);
+    const strategies = simulatePayoffStrategies(liabilities, extra);
+
+    return res.status(200).json({
+      success: true,
+      data: {
+        metrics,
+        strategies,
+        extraMonthlyAmount: extra
+      }
     });
   } catch (error: any) {
     const normalized = normalizeError(error, 400, 'spinwheel');

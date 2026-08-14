@@ -76,12 +76,27 @@ export async function submitBalanceTransfer(payload: {
   return callApi<any>('POST', '/api/balance-transfer/submit', payload);
 }
 
-export async function fetchCoPilotAnalysis(userId?: string, checkingBalance?: number) {
-  return callApi<any>('POST', '/api/copilot/analyze', { userId, checkingBalance });
+export async function fetchCoPilotAnalysis(userId?: string, checkingBalance?: number, cachedProfile?: any) {
+  return callApi<any>('POST', '/api/copilot/analyze', { userId, checkingBalance, cachedProfile });
 }
 
-export async function sendCoPilotMessage(userId: string, message: string) {
-  return callApi<any>('POST', '/api/copilot/chat', { userId, message });
+export async function sendCoPilotMessage(
+  userId: string, 
+  message: string, 
+  conversationHistory?: Array<{ sender: string; text: string }>,
+  cachedProfile?: any
+) {
+  return callApi<any>('POST', '/api/copilot/chat', { userId, message, conversationHistory, cachedProfile });
 }
+
+export async function simulateCoPilotStrategy(
+  userId: string,
+  extraMonthlyAmount: number,
+  checkingBalance?: number,
+  cachedProfile?: any
+) {
+  return callApi<any>('POST', '/api/copilot/simulate', { userId, extraMonthlyAmount, checkingBalance, cachedProfile });
+}
+
 
 
