@@ -9,6 +9,7 @@ import { connectUserSms, verifyUserSms, fetchDebtProfile, connectPreVerifiedUser
 import { normalizeDebtProfile, normalizeBalanceTransferLiabilities } from './mapper';
 import { generateCoPilotAnalysis, processCoPilotChat, simulatePayoffStrategies, calculateDebtMetrics } from './copilot';
 import { orchestrateIdentityWaterfall, getWaterfallKpis, getRiskOSEvaluation } from './socure';
+import { evaluateQslpCompliance, dispatchQslpRecordkeeperMatch, getQslpKpis } from './qslp';
 
 
 
@@ -571,6 +572,56 @@ app.post('/api/identity/waterfall/docv-complete', rateLimiter, async (req: Reque
 app.post('/api/identity/waterfall/webhook', (req: Request, res: Response) => {
   console.log('[Socure RiskOS Webhook Event Received]:', JSON.stringify(req.body));
   return res.status(200).json({ received: true });
+});
+
+// ==========================================
+// SECURE 2.0 SECTION 110 QSLP ENGINE ROUTES
+// ==========================================
+
+// POST /api/qslp/evaluate
+app.post('/api/qslp/evaluate', rateLimiter, (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { scenario, customOverrides } = req.body || {};
+
+  try {
+    const result = evaluateQslpCompliance(scenario || 'COMPLIANT_MATCH', customOverrides);
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 500, 'backend');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
+// POST /api/qslp/dispatch-match
+app.post('/api/qslp/dispatch-match', rateLimiter, (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { eventId, recordkeeper } = req.body || {};
+
+  try {
+    const result = dispatchQslpRecordkeeperMatch(
+      eventId || `qslp_evt_${Date.now()}`,
+      recordkeeper || 'Fidelity Investments'
+    );
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 500, 'backend');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
+// GET /api/qslp/kpis
+app.get('/api/qslp/kpis', (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  return res.status(200).json({
+    success: true,
+    data: getQslpKpis()
+  });
 });
 
 // Express global error handler

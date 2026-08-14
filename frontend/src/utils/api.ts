@@ -117,3 +117,15 @@ export async function completeDocVVerification(evalId: string, passed: boolean =
   return callApi<any>('POST', '/api/identity/waterfall/docv-complete', { evalId, passed });
 }
 
+// SECURE 2.0 QSLP Engine API calls
+export async function evaluateQslpPayment(scenario: string = 'COMPLIANT_MATCH', customOverrides?: any) {
+  return callApi<any>('POST', '/api/qslp/evaluate', { scenario, customOverrides });
+}
+
+export async function dispatchQslpMatch(eventId: string, recordkeeper: string = 'Fidelity Investments') {
+  return callApi<any>('POST', '/api/qslp/dispatch-match', { eventId, recordkeeper });
+}
+
+export async function fetchQslpKpis() {
+  return callApi<any>('GET', '/api/qslp/kpis');
+}

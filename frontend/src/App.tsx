@@ -6,11 +6,12 @@ import { BalanceTransferWidget } from './components/BalanceTransferWidget';
 import { AgenticCoPilot } from './components/AgenticCoPilot';
 import { McpDemoViewer } from './components/McpDemoViewer';
 import { RiskOSWaterfall } from './components/RiskOSWaterfall';
+import { QslpEngineViewer } from './components/QslpEngineViewer';
 import { DebugPanel } from './components/DebugPanel';
-import { ShieldCheck, RefreshCw, Zap, Users, FileText, ArrowLeftRight, Bot, Server } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Zap, Users, FileText, ArrowLeftRight, Bot, Server, Award } from 'lucide-react';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'connect' | 'debt-profile' | 'balance-transfer' | 'agentic-copilot' | 'mcp-protocol' | 'identity-waterfall'>('identity-waterfall');
+  const [activeTab, setActiveTab] = useState<'connect' | 'debt-profile' | 'balance-transfer' | 'agentic-copilot' | 'mcp-protocol' | 'identity-waterfall' | 'qslp-engine'>('qslp-engine');
   const [step, setStep] = useState<1 | 2>(1);
   const [userId, setUserId] = useState<string | null>(null);
   const [connectData, setConnectData] = useState<any | null>(null);
@@ -117,6 +118,18 @@ export function App() {
             </button>
 
             <button
+              onClick={() => setActiveTab('qslp-engine')}
+              className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === 'qslp-engine'
+                  ? 'bg-gradient-to-r from-emerald-500 via-teal-600 to-cyan-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Award className="w-3.5 h-3.5 text-emerald-400" />
+              <span>SECURE 2.0 QSLP</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('mcp-protocol')}
               className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === 'mcp-protocol'
@@ -213,6 +226,8 @@ export function App() {
           <AgenticCoPilot initialUserId={userId} />
         ) : activeTab === 'identity-waterfall' ? (
           <RiskOSWaterfall onNavigateToDebtProfile={() => setActiveTab('debt-profile')} />
+        ) : activeTab === 'qslp-engine' ? (
+          <QslpEngineViewer initialUserId={userId} />
         ) : (
           <McpDemoViewer initialUserId={userId} />
         )}
