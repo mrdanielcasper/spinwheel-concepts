@@ -8,6 +8,7 @@ import { normalizeError } from './parser';
 import { connectUserSms, verifyUserSms, fetchDebtProfile, connectPreVerifiedUser, createLiabilityPayment } from './client';
 import { normalizeDebtProfile, normalizeBalanceTransferLiabilities } from './mapper';
 import { generateCoPilotAnalysis, processCoPilotChat, simulatePayoffStrategies, calculateDebtMetrics } from './copilot';
+import { orchestrateIdentityWaterfall, getWaterfallKpis, getRiskOSEvaluation } from './socure';
 
 
 
@@ -26,7 +27,7 @@ const ipRateLimits = new Map<string, RateLimitData>();
 const phoneRateLimits = new Map<string, RateLimitData>();
 
 const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute window
-const MAX_REQUESTS_PER_WINDOW = 10;     // Max 10 requests per minute
+const MAX_REQUESTS_PER_WINDOW = 120;    // Max 120 requests per minute for smooth interactive demoing
 
 /**
  * Basic in-memory rate limiter middleware.
@@ -494,6 +495,82 @@ app.post('/api/copilot/simulate', rateLimiter, async (req: Request, res: Respons
     const normalized = normalizeError(error, 400, 'spinwheel');
     return res.status(normalized.httpStatus).json({ success: false, error: normalized });
   }
+});
+
+// POST /api/identity/waterfall/verify
+app.post('/api/identity/waterfall/verify', rateLimiter, async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { userData, scenarioOverride } = req.body || {};
+
+  try {
+    const result = await orchestrateIdentityWaterfall(
+      userData || {}, 
+      scenarioOverride || 'SOCURE_RESCUE'
+    );
+
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 500, 'backend');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
+// GET /api/identity/waterfall/kpis
+app.get('/api/identity/waterfall/kpis', (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  return res.status(200).json({
+    success: true,
+    data: getWaterfallKpis()
+  });
+});
+
+// GET /api/identity/waterfall/evaluation/:evalId
+app.get('/api/identity/waterfall/evaluation/:evalId', async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { evalId } = req.params;
+
+  try {
+    const data = await getRiskOSEvaluation(evalId);
+    return res.status(200).json({
+      success: true,
+      data: data || { eval_id: evalId, eval_status: 'evaluation_paused', decision: 'REVIEW' }
+    });
+  } catch (error: any) {
+    const normalized = normalizeError(error, 500, 'backend');
+    return res.status(normalized.httpStatus).json({ success: false, error: normalized });
+  }
+});
+
+// POST /api/identity/waterfall/docv-complete (Simulate or finalize DocV completion)
+app.post('/api/identity/waterfall/docv-complete', rateLimiter, async (req: Request, res: Response) => {
+  setNoCacheHeaders(res);
+  const { evalId, passed } = req.body || {};
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      evalId: evalId || `eval_docv_${Date.now()}`,
+      evalStatus: 'evaluation_completed',
+      decision: passed !== false ? 'ACCEPT' : 'REJECT',
+      docVCompleted: true,
+      documentType: 'DRIVERS_LICENSE',
+      biometricMatchScore: 0.96,
+      tamperDetected: false,
+      spinwheelProfileProceed: passed !== false,
+      summary: passed !== false 
+        ? 'DocV government ID scan & selfie biometric match passed with 96% confidence! User identity verified and unlocked for Debt Profile.' 
+        : 'DocV document verification failed (Tamper detected or invalid ID).'
+    }
+  });
+});
+
+// POST /api/identity/waterfall/webhook
+app.post('/api/identity/waterfall/webhook', (req: Request, res: Response) => {
+  console.log('[Socure RiskOS Webhook Event Received]:', JSON.stringify(req.body));
+  return res.status(200).json({ received: true });
 });
 
 // Express global error handler

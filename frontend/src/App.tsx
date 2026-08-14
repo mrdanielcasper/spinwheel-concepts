@@ -5,11 +5,12 @@ import { DebtProfileViewer } from './components/DebtProfileViewer';
 import { BalanceTransferWidget } from './components/BalanceTransferWidget';
 import { AgenticCoPilot } from './components/AgenticCoPilot';
 import { McpDemoViewer } from './components/McpDemoViewer';
+import { RiskOSWaterfall } from './components/RiskOSWaterfall';
 import { DebugPanel } from './components/DebugPanel';
 import { ShieldCheck, RefreshCw, Zap, Users, FileText, ArrowLeftRight, Bot, Server } from 'lucide-react';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'connect' | 'debt-profile' | 'balance-transfer' | 'agentic-copilot' | 'mcp-protocol'>('mcp-protocol');
+  const [activeTab, setActiveTab] = useState<'connect' | 'debt-profile' | 'balance-transfer' | 'agentic-copilot' | 'mcp-protocol' | 'identity-waterfall'>('identity-waterfall');
   const [step, setStep] = useState<1 | 2>(1);
   const [userId, setUserId] = useState<string | null>(null);
   const [connectData, setConnectData] = useState<any | null>(null);
@@ -101,6 +102,18 @@ export function App() {
             >
               <Bot className="w-3.5 h-3.5 text-violet-400" />
               <span>Co-Pilot</span>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('identity-waterfall')}
+              className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === 'identity-waterfall'
+                  ? 'bg-gradient-to-r from-cyan-500 via-blue-600 to-violet-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-cyan-400" />
+              <span>RiskOS Waterfall</span>
             </button>
 
             <button
@@ -198,6 +211,8 @@ export function App() {
           <BalanceTransferWidget initialUserId={userId} />
         ) : activeTab === 'agentic-copilot' ? (
           <AgenticCoPilot initialUserId={userId} />
+        ) : activeTab === 'identity-waterfall' ? (
+          <RiskOSWaterfall onNavigateToDebtProfile={() => setActiveTab('debt-profile')} />
         ) : (
           <McpDemoViewer initialUserId={userId} />
         )}

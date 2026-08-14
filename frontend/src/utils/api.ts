@@ -98,5 +98,22 @@ export async function simulateCoPilotStrategy(
   return callApi<any>('POST', '/api/copilot/simulate', { userId, extraMonthlyAmount, checkingBalance, cachedProfile });
 }
 
+export async function executeIdentityWaterfall(payload: {
+  userData?: any;
+  scenarioOverride?: 'PROVE_MATCH' | 'SOCURE_RESCUE' | 'SYNTHETIC_FRAUD' | 'DOCV_STEPUP';
+}) {
+  return callApi<any>('POST', '/api/identity/waterfall/verify', payload);
+}
 
+export async function fetchWaterfallKpis() {
+  return callApi<any>('GET', '/api/identity/waterfall/kpis');
+}
+
+export async function fetchEvaluationStatus(evalId: string) {
+  return callApi<any>('GET', `/api/identity/waterfall/evaluation/${evalId}`);
+}
+
+export async function completeDocVVerification(evalId: string, passed: boolean = true) {
+  return callApi<any>('POST', '/api/identity/waterfall/docv-complete', { evalId, passed });
+}
 
