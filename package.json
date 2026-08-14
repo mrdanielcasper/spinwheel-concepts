@@ -9,7 +9,8 @@
     "install-all": "npm install && npm run install:backend && npm run install:frontend",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
-    "dev": "npx concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+    "dev": "npx concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "test": "npm --prefix backend run test:coverage"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
