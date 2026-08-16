@@ -7,12 +7,13 @@ import { AgenticCoPilot } from './components/AgenticCoPilot';
 import { McpDemoViewer } from './components/McpDemoViewer';
 import { RiskOSWaterfall } from './components/RiskOSWaterfall';
 import { QslpEngineViewer } from './components/QslpEngineViewer';
+import { EmbeddedHrisPortal } from './components/EmbeddedHrisPortal';
 import { SwaggerDocsViewer } from './components/SwaggerDocsViewer';
 import { DebugPanel } from './components/DebugPanel';
-import { ShieldCheck, RefreshCw, Zap, Users, FileText, ArrowLeftRight, Bot, Server, Award, BookOpen } from 'lucide-react';
+import { ShieldCheck, RefreshCw, Zap, Users, FileText, ArrowLeftRight, Bot, Server, Award, BookOpen, Building2 } from 'lucide-react';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<'connect' | 'debt-profile' | 'balance-transfer' | 'agentic-copilot' | 'mcp-protocol' | 'identity-waterfall' | 'qslp-engine' | 'api-docs'>('api-docs');
+  const [activeTab, setActiveTab] = useState<'connect' | 'debt-profile' | 'balance-transfer' | 'agentic-copilot' | 'mcp-protocol' | 'identity-waterfall' | 'qslp-engine' | 'embedded-hris' | 'api-docs'>('api-docs');
   const [step, setStep] = useState<1 | 2>(1);
   const [userId, setUserId] = useState<string | null>(null);
   const [connectData, setConnectData] = useState<any | null>(null);
@@ -131,6 +132,18 @@ export function App() {
             </button>
 
             <button
+              onClick={() => setActiveTab('embedded-hris')}
+              className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                activeTab === 'embedded-hris'
+                  ? 'bg-gradient-to-r from-cyan-500 via-blue-600 to-indigo-600 text-white shadow-md'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+            >
+              <Building2 className="w-3.5 h-3.5 text-cyan-400" />
+              <span>HRIS Mockup</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab('mcp-protocol')}
               className={`inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activeTab === 'mcp-protocol'
@@ -240,7 +253,9 @@ export function App() {
         ) : activeTab === 'identity-waterfall' ? (
           <RiskOSWaterfall onNavigateToDebtProfile={() => setActiveTab('debt-profile')} />
         ) : activeTab === 'qslp-engine' ? (
-          <QslpEngineViewer initialUserId={userId} />
+          <QslpEngineViewer initialUserId={userId} onNavigateToHris={() => setActiveTab('embedded-hris')} />
+        ) : activeTab === 'embedded-hris' ? (
+          <EmbeddedHrisPortal onBackToEngine={() => setActiveTab('qslp-engine')} />
         ) : activeTab === 'api-docs' ? (
           <SwaggerDocsViewer />
         ) : (

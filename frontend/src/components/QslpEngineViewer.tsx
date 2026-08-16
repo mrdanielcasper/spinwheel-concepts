@@ -4,15 +4,16 @@ import {
   Layers, Terminal, Calculator,
   TrendingUp, Send, Check, Hash, FileCheck2, Scale,
   UserCheck, Building2, Landmark, Sliders, Shield, Printer,
-  X
+  X, ExternalLink, Sparkles
 } from 'lucide-react';
 import { evaluateQslpPayment, dispatchQslpMatch, fetchQslpKpis } from '../utils/api';
 
 interface QslpEngineViewerProps {
   initialUserId?: string | null;
+  onNavigateToHris?: () => void;
 }
 
-export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
+export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = ({ onNavigateToHris }) => {
   const [selectedScenario, setSelectedScenario] = useState<'COMPLIANT_MATCH' | 'THIRD_PARTY_PAYOR_REJECT' | 'NON_QUALIFIED_DEBT_REJECT' | 'CAP_REACHED'>('COMPLIANT_MATCH');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<any | null>(null);
@@ -121,6 +122,34 @@ export const QslpEngineViewer: React.FC<QslpEngineViewerProps> = () => {
   return (
     <div className="w-full max-w-5xl mx-auto space-y-8 animate-in fade-in duration-300">
       
+      {/* Customer Experience HRIS Mockup Banner */}
+      <div className="bg-gradient-to-r from-cyan-950/80 via-blue-950/60 to-slate-950 border border-cyan-500/40 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center border border-cyan-500/30 flex-shrink-0">
+            <Building2 className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center space-x-2">
+              <span className="text-sm font-bold text-white tracking-tight">Customer View: Embedded HRIS & Benefits Experience</span>
+              <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/40">MOCKUP</span>
+            </div>
+            <p className="text-xs text-slate-300 mt-0.5">
+              Experience how enterprise customers (Rippling, Gusto, Workday) embed Spinwheel's SECURE 2.0 loan linking & payroll matching directly into their benefits portal.
+            </p>
+          </div>
+        </div>
+        {onNavigateToHris && (
+          <button
+            onClick={onNavigateToHris}
+            className="w-full sm:w-auto px-4 py-2.5 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold rounded-xl text-xs shadow-lg transition-all flex items-center justify-center space-x-2 flex-shrink-0"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Launch HRIS Portal Mockup</span>
+            <ExternalLink className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
       {/* Header Banner */}
       <div className="glass-premium rounded-2xl p-6 sm:p-8 shadow-2xl border border-emerald-500/30 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-emerald-600/20 via-teal-600/10 to-cyan-600/10 rounded-full blur-3xl pointer-events-none" />
